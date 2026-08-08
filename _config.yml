@@ -11,3 +11,7 @@ minima:
   skin: solarized-light
 
 show_excerpts: true
+
+exclude:
+  - MAINTENANCE.md
+  - README.md
