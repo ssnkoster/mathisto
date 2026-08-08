@@ -52,10 +52,22 @@ img { max-width: 100%; border-radius: 14px; display: block; }
   align-items: center;
   gap: 10px;
   font-weight: 800;
-  font-size: 1.25em;
+  font-size: 1.3em;
+  letter-spacing: -0.01em;
   color: var(--orange-dark);
+  position: relative;
+  padding-bottom: 2px;
 }
-.site-brand .logo-emoji { font-size: 1.3em; }
+.site-brand::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 28px;
+  height: 4px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--blue));
+}
 .site-tagline {
   font-size: 0.85em;
   color: var(--ink-soft);
@@ -73,9 +85,10 @@ img { max-width: 100%; border-radius: 14px; display: block; }
   text-align: center;
 }
 .hero h1 {
-  font-size: 2em;
-  margin: 0 0 10px;
+  font-size: 2.2em;
+  margin: 0 0 14px;
   color: var(--orange-dark);
+  letter-spacing: -0.01em;
 }
 .hero p {
   color: var(--ink-soft);
