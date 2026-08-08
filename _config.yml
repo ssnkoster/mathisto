@@ -1,0 +1,13 @@
+title: "매티스토 (Mathisto) — 수학과 물리학을 쉽게"
+description: "코딩으로 풀어내는 아이들을 위한 수학·물리 매거진. 매주 새로운 원리를 자연 속 사례와 공학 응용까지 쉽게 풀어드려요."
+baseurl: "/mathisto"
+url: "https://ssnkoster.github.io"
+theme: minima
+markdown: kramdown
+permalink: /episodes/:year-:month-:day-:title/
+lang: ko
+
+minima:
+  skin: solarized-light
+
+show_excerpts: true

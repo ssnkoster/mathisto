@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>태양광 패널 배치 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #eaf5ff 0%, #dcedfb 100%);
+    color: #2c3e50;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 1.6em; margin-bottom: 4px; color: #1c6fa8; }
+  p.sub { text-align: center; margin-top: 0; color: #5a7a95; font-size: 0.95em; }
+  .card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(28, 111, 168, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #cfe9ff 0%, #f5fbff 55%, #eef7ff 100%);
+    border-radius: 16px;
+    border: 3px solid #cfe6f7;
+  }
+  .section-label {
+    font-weight: 800;
+    color: #1c6fa8;
+    font-size: 0.95em;
+    margin: 18px 0 6px;
+  }
+  .angle-row { display: flex; align-items: center; gap: 14px; }
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    outline: none;
+  }
+  #angleSlider { background: linear-gradient(90deg, #a8d8ff, #1c6fa8); }
+  #timeSlider { background: linear-gradient(90deg, #ffcf7d, #ff8c42, #7d6bff); }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #0d5e94;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
+  }
+  .angle-value {
+    min-width: 92px; text-align: center; font-size: 1.15em; font-weight: 700;
+    color: #0d5e94; background: #e6f3fc; border-radius: 10px; padding: 6px 8px;
+  }
+  .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; justify-content: center; }
+  button {
+    border: none; border-radius: 12px; padding: 9px 16px; font-size: 0.9em;
+    font-weight: 700; cursor: pointer; transition: transform 0.1s ease; color: white;
+  }
+  button:active { transform: scale(0.95); }
+  .btn-gold { background: #e08a1e; } .btn-gold:hover { background: #c97710; }
+  .btn-grid { background: #6b8fae; } .btn-grid:hover { background: #587997; }
+  .btn-random { background: #4d8fb0; } .btn-random:hover { background: #3f7a97; }
+  .btn-morning { background: #f0a13a; } .btn-morning:hover { background: #d88c26; }
+  .btn-noon { background: #f4c542; color:#4a3300; } .btn-noon:hover { background: #dcae2c; }
+  .btn-evening { background: #7d6bff; } .btn-evening:hover { background: #6555db; }
+
+  .score-panel {
+    margin-top: 18px; display: flex; align-items: center; gap: 16px;
+    background: #f4faff; border: 2px dashed #a9cde6; border-radius: 12px; padding: 14px 16px;
+  }
+  .score-num { font-size: 2.1em; font-weight: 800; color: #0d5e94; min-width: 92px; text-align: center; }
+  .score-bar-bg { flex: 1; height: 16px; background: #dcecf8; border-radius: 8px; overflow: hidden; }
+  .score-bar-fill { height: 100%; background: linear-gradient(90deg, #ffb347, #2ecc71); border-radius: 8px; transition: width 0.2s ease; }
+  .msg-box {
+    margin-top: 14px; padding: 14px 16px; border-radius: 12px;
+    background: #f4f9ee; border: 2px dashed #a9c98a; font-size: 0.95em; line-height: 1.6; min-height: 1.6em;
+  }
+  .msg-box.warn { background: #fdeeee; border-color: #e6a7a7; }
+  .msg-box.great { background: #eef7ff; border-color: #a9c9e6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-top: 12px; font-size: 0.85em; color: #5a7a95; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .footer-note { text-align: center; color: #6c8aa3; font-size: 0.82em; margin-top: 22px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>☀️ 태양광 패널 배치 실험실</h1>
+  <p class="sub">사실 대부분의 태양광 발전소는 격자로 줄맞춰 남쪽으로 기울여 세워요. 여기서는 몇몇 공학자들이 실험 중인 "황금각 나무형 배치" 아이디어와 비교해봐요.</p>
+
+  <div class="card">
+    <canvas id="panelCanvas" width="560" height="480"></canvas>
+
+    <div class="legend">
+      <span><span class="swatch" style="background:#f5a623;"></span> 햇빛을 잘 받는 패널</span>
+      <span><span class="swatch" style="background:#8a97a3;"></span> 그림자에 가려진 패널</span>
+      <span><span class="swatch" style="background:#ffd166;border-radius:50%;"></span> 태양</span>
+    </div>
+
+    <div class="section-label">🌻 패널을 심는 각도</div>
+    <div class="angle-row">
+      <span>0°</span>
+      <input type="range" id="angleSlider" min="0" max="180" step="0.1" value="90">
+      <span>180°</span>
+      <span class="angle-value" id="angleValue">90.0°</span>
+    </div>
+    <div class="buttons">
+      <button class="btn-gold" id="goldBtn">🌳 실험적 나무형(황금각 137.5°)</button>
+      <button class="btn-grid" id="gridBtn">◻️ 실제 발전소처럼(격자 90°)</button>
+      <button class="btn-random" id="randomBtn">🎲 아무 각도나!</button>
+    </div>
+
+    <div class="section-label">🕐 하루 중 시간</div>
+    <div class="angle-row">
+      <span>오전7시</span>
+      <input type="range" id="timeSlider" min="7" max="17" step="0.1" value="12">
+      <span>오후5시</span>
+      <span class="angle-value" id="timeValue">낮 12:00</span>
+    </div>
+    <div class="buttons">
+      <button class="btn-morning" id="morningBtn">🌅 아침 7시</button>
+      <button class="btn-noon" id="noonBtn">☀️ 정오 12시</button>
+      <button class="btn-evening" id="eveningBtn">🌇 저녁 5시</button>
+    </div>
+
+    <div class="score-panel">
+      <div class="score-num" id="scoreNum">0%</div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="scoreFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="msg-box" id="msgBox">각도와 시간을 둘 다 바꿔가며 그림자가 어떻게 달라지는지 실험해보세요!</div>
+  </div>
+
+  <div class="card">
+    <strong>왜 시간에 따라 그림자가 달라질까요?</strong>
+    <p style="line-height:1.7;">
+      해는 아침에 낮게 떠서, 낮 12시쯤 하늘 높이 올라갔다가, 저녁에 다시 낮아져요. 해가 낮게 떠 있을 때는 그림자가 <b>길게</b> 늘어지고,
+      해가 머리 위에 있을 때는 그림자가 <b>짧아져요</b>. 그래서 아침저녁에는 패널들이 서로 그림자를 더 많이 가리고, 한낮에는 그림자가 짧아 덜 가려요.
+    </p>
+    <p style="line-height:1.7; margin-bottom:0;">
+      참고로 이 실험실은 "평면에 내려다본 배치"만 단순하게 비교한 거예요. 실제 태양광 발전소 대부분은 평지나 언덕에 <b>직사각형 격자</b>로 줄을 세우고,
+      패널 자체를 남쪽으로 <b>30~37° 정도 기울여</b>(우리나라 위도와 비슷한 각도) 세우는 방식을 써요. 황금각 나무형 배치는 좁은 자리에도 세울 수 있고
+      숲을 덜 없애도 된다는 장점 때문에 <b>일부 연구자들이 실험 중인 아이디어</b>예요. 아직 실제 발전소 대부분에 쓰이는 방식은 아니랍니다.
+    </p>
+  </div>
+
+  <p class="footer-note">수학과 물리학을 쉽게 — 1화 부록: 피보나치와 자연 속 수학 (공학 응용 편)</p>
+</div>
+
+<script>
+const canvas = document.getElementById('panelCanvas');
+const ctx = canvas.getContext('2d');
+const angleSlider = document.getElementById('angleSlider');
+const timeSlider = document.getElementById('timeSlider');
+const angleValueEl = document.getElementById('angleValue');
+const timeValueEl = document.getElementById('timeValue');
+const msgBox = document.getElementById('msgBox');
+const scoreNum = document.getElementById('scoreNum');
+const scoreFill = document.getElementById('scoreFill');
+
+const N = 48;
+const cx = canvas.width / 2;
+const cy = canvas.height / 2 + 40;   // 패널밭 중심을 살짝 아래로 (하늘 공간 확보)
+const scale = 34;
+const panelSize = 14;
+const SHADOW_THRESHOLD = panelSize * 0.65;
+const BASE_SHADOW_LEN = 78;
+const MIN_SHADOW_LEN = 6;
+const SUN_ORBIT_R = 190;
+
+function computePanelPositions(angleDeg) {
+  const angleRad = angleDeg * Math.PI / 180;
+  const pts = [];
+  for (let i = 0; i < N; i++) {
+    const r = scale * Math.sqrt(i);
+    const theta = i * angleRad;
+    const x = cx + r * Math.cos(theta);
+    const y = cy + r * Math.sin(theta);
+    pts.push({ i, x, y });
+  }
+  return pts;
+}
+
+// t: 7~17시. 낮은 태양 각도(sunAngleDeg): 7시->180°(왼쪽 지평선), 12시->90°(정중앙 위), 17시->0°(오른쪽 지평선)
+function sunGeometry(t) {
+  const frac = (t - 7) / 10; // 0~1
+  const sunAngleDeg = 180 * (1 - frac);
+  const sunAngleRad = sunAngleDeg * Math.PI / 180;
+  const elevation = Math.max(0.05, Math.sin(sunAngleRad)); // 0(지평선)~1(정오)
+  const sunX = cx + SUN_ORBIT_R * Math.cos(sunAngleRad);
+  const sunY = (cy - 60) - SUN_ORBIT_R * Math.sin(sunAngleRad) * 0.9;
+  const shadowLen = MIN_SHADOW_LEN + (BASE_SHADOW_LEN - MIN_SHADOW_LEN) * (1 - elevation);
+  // 그림자는 태양 반대 방향(수평 성분)으로 늘어진다
+  const shadowDirX = -Math.cos(sunAngleRad);
+  const shadowDirY = 0.35; // 화면 아래쪽으로 살짝 눕혀서 그림
+  const norm = Math.hypot(shadowDirX, shadowDirY) || 1;
+  return {
+    sunX, sunY, elevation, shadowLen,
+    shadowDirX: shadowDirX / norm,
+    shadowDirY: shadowDirY / norm
+  };
+}
+
+function segPointDist(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len2 = dx * dx + dy * dy;
+  if (len2 === 0) return { dist: Math.hypot(px - x1, py - y1), t: 0 };
+  let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+  t = Math.max(0, Math.min(1, t));
+  const nx = x1 + t * dx, ny = y1 + t * dy;
+  return { dist: Math.hypot(px - nx, py - ny), t };
+}
+
+function computeShadows(pts, sun) {
+  const segs = pts.map(p => ({
+    x1: p.x, y1: p.y,
+    x2: p.x + sun.shadowDirX * sun.shadowLen,
+    y2: p.y + sun.shadowDirY * sun.shadowLen
+  }));
+  for (let j = 0; j < pts.length; j++) {
+    let shadowed = false;
+    for (let i = 0; i < pts.length; i++) {
+      if (i === j) continue;
+      const { dist, t } = segPointDist(pts[j].x, pts[j].y, segs[i].x1, segs[i].y1, segs[i].x2, segs[i].y2);
+      if (t > 0.08 && dist < SHADOW_THRESHOLD) { shadowed = true; break; }
+    }
+    pts[j].shadowed = shadowed;
+  }
+  return segs;
+}
+
+function drawSun(sun, t) {
+  ctx.beginPath();
+  ctx.arc(sun.sunX, sun.sunY, 14, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd166';
+  ctx.fill();
+  ctx.strokeStyle = '#e0a934';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // 살짝 광선
+  ctx.strokeStyle = 'rgba(255,209,102,0.6)';
+  ctx.lineWidth = 2;
+  for (let k = 0; k < 8; k++) {
+    const a = (Math.PI * 2 / 8) * k;
+    ctx.beginPath();
+    ctx.moveTo(sun.sunX + 18 * Math.cos(a), sun.sunY + 18 * Math.sin(a));
+    ctx.lineTo(sun.sunX + 26 * Math.cos(a), sun.sunY + 26 * Math.sin(a));
+    ctx.stroke();
+  }
+}
+
+function drawPanel(x, y, shadowed) {
+  ctx.save();
+  ctx.translate(x, y);
+  const s = panelSize;
+  ctx.fillStyle = shadowed ? '#8a97a3' : '#f5a623';
+  ctx.strokeStyle = shadowed ? '#5c6773' : '#a8650e';
+  ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  ctx.rect(-s / 2, -s / 2, s, s);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = shadowed ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.55)';
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.moveTo(0, -s / 2); ctx.lineTo(0, s / 2);
+  ctx.moveTo(-s / 2, 0); ctx.lineTo(s / 2, 0);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function draw(angleDeg, t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const pts = computePanelPositions(angleDeg);
+  const sun = sunGeometry(t);
+  const segs = computeShadows(pts, sun);
+
+  // 그림자 선 (연하게)
+  ctx.strokeStyle = 'rgba(90,90,110,0.18)';
+  ctx.lineWidth = panelSize * 0.7;
+  ctx.lineCap = 'round';
+  for (const s of segs) {
+    ctx.beginPath();
+    ctx.moveTo(s.x1, s.y1);
+    ctx.lineTo(s.x2, s.y2);
+    ctx.stroke();
+  }
+
+  for (const p of pts) drawPanel(p.x, p.y, p.shadowed);
+  drawSun(sun, t);
+
+  const unshadowed = pts.filter(p => !p.shadowed).length;
+  const score = Math.round((unshadowed / pts.length) * 100);
+  return score;
+}
+
+function timeLabel(t) {
+  const h = Math.floor(t);
+  const m = Math.round((t - h) * 60);
+  const period = h < 12 ? '오전' : (h === 12 ? '낮' : '오후');
+  const h12 = h <= 12 ? h : h - 12;
+  return `${period} ${h12}:${m.toString().padStart(2, '0')}`;
+}
+
+function messageFor(angleDeg, t, score) {
+  const angleDiff = Math.abs(angleDeg - 137.5);
+  const isGolden = angleDiff < 0.3;
+  const isSimple = Math.abs(angleDeg - 90) < 1 || Math.abs(angleDeg - 120) < 1 || Math.abs(angleDeg - 60) < 1 || Math.abs(angleDeg - 180) < 1;
+  const isNoonish = Math.abs(t - 12) < 1;
+
+  if (isGolden && isNoonish) {
+    msgBox.className = 'msg-box great';
+    msgBox.textContent = `✨ 황금각 + 한낮! 그림자가 짧고 방향도 겹치지 않아서 효율이 ${score}%까지 올라갔어요.`;
+  } else if (isSimple && !isNoonish) {
+    msgBox.className = 'msg-box warn';
+    msgBox.textContent = `지금은 그림자가 길게 늘어지는 시간(${timeLabel(t)})인데, 각도까지 딱 떨어지는 숫자라서 효율이 ${score}%로 뚝 떨어졌어요.`;
+  } else if (isGolden) {
+    msgBox.className = 'msg-box';
+    msgBox.textContent = `황금각으로 심었어요. 지금(${timeLabel(t)})은 그림자가 좀 길어서 효율이 ${score}%예요. 시간을 정오 쪽으로 옮겨보세요!`;
+  } else {
+    msgBox.className = 'msg-box';
+    msgBox.textContent = `각도 ${angleDeg.toFixed(1)}°, 시간 ${timeLabel(t)} — 효율은 ${score}%예요. 각도를 황금각으로, 시간을 정오로 바꿔가며 비교해보세요.`;
+  }
+}
+
+function update() {
+  const angleDeg = parseFloat(angleSlider.value);
+  const t = parseFloat(timeSlider.value);
+  angleValueEl.textContent = angleDeg.toFixed(1) + '°';
+  timeValueEl.textContent = timeLabel(t);
+  const score = draw(angleDeg, t);
+  scoreNum.textContent = score + '%';
+  scoreFill.style.width = score + '%';
+  messageFor(angleDeg, t, score);
+}
+
+angleSlider.addEventListener('input', update);
+timeSlider.addEventListener('input', update);
+
+document.getElementById('goldBtn').addEventListener('click', () => { angleSlider.value = 137.5; update(); });
+document.getElementById('gridBtn').addEventListener('click', () => { angleSlider.value = 90; update(); });
+document.getElementById('randomBtn').addEventListener('click', () => {
+  angleSlider.value = Math.round(Math.random() * 1800) / 10; update();
+});
+document.getElementById('morningBtn').addEventListener('click', () => { timeSlider.value = 7; update(); });
+document.getElementById('noonBtn').addEventListener('click', () => { timeSlider.value = 12; update(); });
+document.getElementById('eveningBtn').addEventListener('click', () => { timeSlider.value = 17; update(); });
+
+update();
+</script>
+</body>
+</html>

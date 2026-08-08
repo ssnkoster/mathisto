@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해바라기 각도 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #fff8e7 0%, #fef1d6 100%);
+    color: #4a3623;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    color: #b25c1e;
+  }
+  p.sub {
+    text-align: center;
+    margin-top: 0;
+    color: #8a6a45;
+    font-size: 0.95em;
+  }
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(178, 92, 30, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background: #fffef9;
+    border-radius: 50%;
+    border: 3px solid #f3ddb0;
+  }
+  .controls {
+    margin-top: 20px;
+  }
+  .angle-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ffd699, #ff9d4d);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #d9670c;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
+  }
+  .angle-value {
+    min-width: 92px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #d9670c;
+    background: #fff3de;
+    border-radius: 10px;
+    padding: 6px 8px;
+  }
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    justify-content: center;
+  }
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 0.95em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    color: white;
+  }
+  button:active { transform: scale(0.95); }
+  .btn-gold { background: #d9670c; }
+  .btn-gold:hover { background: #c25a09; }
+  .btn-try { background: #7a9a5c; }
+  .btn-try:hover { background: #688a4b; }
+  .btn-random { background: #4d8fb0; }
+  .btn-random:hover { background: #3f7a97; }
+  .msg-box {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #f4f9ee;
+    border: 2px dashed #a9c98a;
+    font-size: 0.95em;
+    line-height: 1.6;
+    min-height: 1.6em;
+  }
+  .msg-box.warn { background: #fdeeee; border-color: #e6a7a7; }
+  .msg-box.great { background: #eef7ff; border-color: #a9c9e6; }
+  .footer-note {
+    text-align: center;
+    color: #a68a63;
+    font-size: 0.82em;
+    margin-top: 22px;
+  }
+  .count-row {
+    display:flex; justify-content: center; align-items:center; gap:10px; margin-top:10px;
+    font-size: 0.9em; color: #8a6a45;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌻 해바라기 각도 실험실</h1>
+  <p class="sub">씨앗이 자라날 때마다 각도를 조금씩 틀어서 심어봐요. 어떤 각도가 제일 예쁜 나선을 만들까요?</p>
+
+  <div class="card">
+    <canvas id="seedCanvas" width="560" height="560"></canvas>
+    <div class="count-row">
+      씨앗 개수: <span id="seedCount">400</span>개
+    </div>
+
+    <div class="controls">
+      <div class="angle-row">
+        <span>0°</span>
+        <input type="range" id="angleSlider" min="0" max="180" step="0.1" value="90">
+        <span>180°</span>
+      </div>
+      <div style="text-align:center; margin-top: 10px;">
+        <span class="angle-value" id="angleValue">90.0°</span>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-gold" id="goldBtn">🌟 황금각(137.5°) 보기</button>
+        <button class="btn-try" id="niceBtn">🔢 90°로 심어보기</button>
+        <button class="btn-random" id="randomBtn">🎲 아무 각도나!</button>
+      </div>
+
+      <div class="msg-box" id="msgBox">슬라이더를 움직여서 각도를 바꿔보세요!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <strong>왜 137.5°일까요?</strong>
+    <p style="line-height:1.7; margin-bottom:0;">
+      해바라기는 씨앗을 하나씩 만들 때마다 이전 씨앗에서 <b>같은 각도</b>만큼 돌아간 자리에 새 씨앗을 놓아요.
+      각도가 90°나 120°처럼 딱 떨어지는 숫자면, 씨앗들이 곧은 줄을 이루면서 사이사이에 빈틈이 많이 생겨요.
+      그런데 <b>137.5°</b>(황금각)로 돌리면 어떤 씨앗도 같은 방향으로 겹치지 않아서, 빈틈없이 촘촘하게 채워진
+      아름다운 나선이 만들어져요. 이 각도는 피보나치 수열과 숨어 있는 '황금비'라는 특별한 숫자에서 나와요.
+    </p>
+  </div>
+
+  <p class="footer-note">수학과 물리학을 쉽게 — 첫 번째 이야기: 피보나치와 자연 속 수학</p>
+</div>
+
+<script>
+const canvas = document.getElementById('seedCanvas');
+const ctx = canvas.getContext('2d');
+const slider = document.getElementById('angleSlider');
+const angleValueEl = document.getElementById('angleValue');
+const msgBox = document.getElementById('msgBox');
+const seedCountEl = document.getElementById('seedCount');
+
+const N = 400;
+seedCountEl.textContent = N;
+
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+const scale = 13.5;
+
+function colorForIndex(i, n) {
+  const t = i / n;
+  // warm brown -> cream gradient, like sunflower seeds
+  const r = Math.round(120 + 135 * t);
+  const g = Math.round(70 + 150 * t);
+  const b = Math.round(20 + 130 * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+function draw(angleDeg) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const angleRad = angleDeg * Math.PI / 180;
+  for (let i = 0; i < N; i++) {
+    const r = scale * Math.sqrt(i);
+    const theta = i * angleRad;
+    const x = cx + r * Math.cos(theta);
+    const y = cy + r * Math.sin(theta);
+    ctx.beginPath();
+    ctx.arc(x, y, 4.2, 0, Math.PI * 2);
+    ctx.fillStyle = colorForIndex(i, N);
+    ctx.strokeStyle = 'rgba(90,60,20,0.35)';
+    ctx.lineWidth = 0.6;
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+function messageFor(angleDeg) {
+  const diff = Math.abs(angleDeg - 137.5);
+  if (diff < 0.3) {
+    msgBox.className = 'msg-box great';
+    msgBox.textContent = '✨ 바로 이 각도예요! 황금각(137.5°)으로 심으면 빈틈없이 촘촘한 나선이 생겨요. 실제 해바라기도 이렇게 씨앗을 채운답니다.';
+  } else if (Math.abs(angleDeg - 90) < 1 || Math.abs(angleDeg - 120) < 1 || Math.abs(angleDeg - 60) < 1 || Math.abs(angleDeg - 180) < 1) {
+    msgBox.className = 'msg-box warn';
+    msgBox.textContent = '이 각도는 "딱 떨어지는" 숫자라서 씨앗들이 곧은 줄무늬를 이루며 사이에 빈 공간이 많이 생겨요. 자연스럽지 않죠?';
+  } else {
+    msgBox.className = 'msg-box';
+    msgBox.textContent = `지금 각도는 ${angleDeg.toFixed(1)}°예요. 슬라이더를 137.5° 근처로 옮기면 무슨 일이 생기는지 살펴보세요!`;
+  }
+}
+
+function update(angleDeg) {
+  angleValueEl.textContent = angleDeg.toFixed(1) + '°';
+  draw(angleDeg);
+  messageFor(angleDeg);
+}
+
+slider.addEventListener('input', () => {
+  update(parseFloat(slider.value));
+});
+
+document.getElementById('goldBtn').addEventListener('click', () => {
+  slider.value = 137.5;
+  update(137.5);
+});
+document.getElementById('niceBtn').addEventListener('click', () => {
+  slider.value = 90;
+  update(90);
+});
+document.getElementById('randomBtn').addEventListener('click', () => {
+  const a = Math.round(Math.random() * 1800) / 10;
+  slider.value = a;
+  update(a);
+});
+
+update(90);
+</script>
+</body>
+</html>
