@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>외르스테드 나침반 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #fff8e7 0%, #fef1d6 100%);
+    color: #4a3623;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    color: #b25c1e;
+  }
+  p.sub {
+    text-align: center;
+    margin-top: 0;
+    color: #8a6a45;
+    font-size: 0.95em;
+  }
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(178, 92, 30, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background: #fffef9;
+    border-radius: 16px;
+    border: 3px solid #f3ddb0;
+  }
+  .controls { margin-top: 20px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .row label {
+    min-width: 110px;
+    font-weight: bold;
+    font-size: 0.92em;
+    color: #b25c1e;
+  }
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ffd699, #ff9d4d);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #e8792a;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #e8792a;
+    cursor: pointer;
+  }
+  .value-badge {
+    min-width: 64px;
+    text-align: center;
+    background: #fff2d9;
+    border-radius: 10px;
+    padding: 4px 8px;
+    font-weight: bold;
+    color: #b25c1e;
+  }
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 26px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+  button:active { transform: scale(0.96); }
+  #switchBtn {
+    background: #e8792a;
+    color: #fff;
+  }
+  #switchBtn.off {
+    background: #d9c9a8;
+    color: #6b5432;
+  }
+  #dirBtn {
+    background: #3a6ea5;
+    color: #fff;
+  }
+  .caption {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.92em;
+    color: #8a6a45;
+    line-height: 1.6;
+  }
+  .caption strong { color: #b25c1e; }
+  .status {
+    text-align: center;
+    font-size: 1.05em;
+    font-weight: bold;
+    margin-top: 6px;
+    color: #4a3623;
+    min-height: 1.4em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚡🧭 외르스테드 나침반 실험실</h1>
+  <p class="sub">전선에 전류를 흘려서, 나침반이 왜 움직이는지 눈으로 확인해보세요!</p>
+
+  <div class="card">
+    <canvas id="canvas" width="680" height="380"></canvas>
+    <div class="status" id="status">스위치를 눌러서 전류를 흘려보세요!</div>
+
+    <div class="controls">
+      <div class="row">
+        <label for="current">전류 세기</label>
+        <input type="range" id="current" min="0" max="100" value="0">
+        <div class="value-badge" id="currentVal">0</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button id="switchBtn" class="off">🔌 회로 스위치: 꺼짐</button>
+      <button id="dirBtn">↔️ 전류 방향 바꾸기</button>
+    </div>
+
+    <p class="caption">
+      나침반은 원래 항상 <strong>북쪽</strong>을 가리켜요. 그런데 전선 아래로 전류가 흐르면, 전선을 둥글게 감싸는
+      <strong>새로운 자기장</strong>이 생겨서 나침반 바늘이 살짝 돌아가요. 전류가 셀수록, 전선에 가까울수록 더 많이 돌아가고,
+      전류 방향을 바꾸면 나침반이 도는 방향도 반대가 돼요. 이게 바로 1820년 외르스테드가 발견한 신기한 현상이에요!
+    </p>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const currentSlider = document.getElementById('current');
+const currentVal = document.getElementById('currentVal');
+const switchBtn = document.getElementById('switchBtn');
+const dirBtn = document.getElementById('dirBtn');
+const statusEl = document.getElementById('status');
+
+let circuitOn = false;
+let direction = 1; // 1: 오른쪽으로 흐름, -1: 왼쪽으로 흐름
+let currentStrength = 0;
+
+const wireY = 90;
+const wireXStart = 60;
+const wireXEnd = 620;
+
+// 나침반 위치들 (전선 아래, 다양한 거리)
+const compasses = [
+  { x: 200, y: 220, baseAngle: -90 },
+  { x: 340, y: 220, baseAngle: -90 },
+  { x: 480, y: 220, baseAngle: -90 },
+  { x: 340, y: 320, baseAngle: -90 },
+];
+
+function drawWire() {
+  ctx.strokeStyle = '#4a3623';
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(wireXStart, wireY);
+  ctx.lineTo(wireXEnd, wireY);
+  ctx.stroke();
+
+  // 전류 방향 화살표 (흐를 때만)
+  if (circuitOn && currentStrength > 0) {
+    const arrowCount = 4;
+    for (let i = 0; i < arrowCount; i++) {
+      const t = (i + 0.5) / arrowCount;
+      let x = wireXStart + t * (wireXEnd - wireXStart);
+      if (direction < 0) x = wireXEnd - t * (wireXEnd - wireXStart);
+      drawArrowOnLine(x, wireY, direction);
+    }
+  }
+
+  ctx.fillStyle = '#b25c1e';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('전선', (wireXStart + wireXEnd) / 2, wireY - 20);
+}
+
+function drawArrowOnLine(x, y, dir) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(dir > 0 ? 0 : Math.PI);
+  ctx.fillStyle = '#e8792a';
+  ctx.beginPath();
+  ctx.moveTo(-10, -8);
+  ctx.lineTo(14, 0);
+  ctx.lineTo(-10, 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFieldRings() {
+  if (!circuitOn || currentStrength <= 0) return;
+  const cx = (wireXStart + wireXEnd) / 2;
+  const alpha = Math.min(0.5, 0.12 + currentStrength / 250);
+  ctx.strokeStyle = `rgba(232, 121, 42, ${alpha})`;
+  ctx.lineWidth = 2;
+  for (let r = 30; r <= 160; r += 40) {
+    ctx.beginPath();
+    ctx.arc(cx, wireY, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+function computeDeflection(cx_dist) {
+  // 거리가 멀수록, 전류가 약할수록 편향이 작아짐 (간단한 모델)
+  if (!circuitOn) return 0;
+  const k = 1400;
+  const deflectionDeg = direction * Math.min(80, (k * currentStrength) / (100 * (cx_dist + 40)));
+  return deflectionDeg;
+}
+
+function drawCompass(c) {
+  const dist = Math.abs(c.x - (wireXStart + wireXEnd) / 2) + Math.abs(c.y - wireY) * 0.5;
+  const deflection = computeDeflection(dist);
+  const angleDeg = c.baseAngle + deflection; // baseAngle -90 = 위쪽(북쪽) 기준, canvas 좌표계 보정
+  const angleRad = (angleDeg * Math.PI) / 180;
+
+  // 받침
+  ctx.beginPath();
+  ctx.arc(c.x, c.y, 36, 0, Math.PI * 2);
+  ctx.fillStyle = '#fffdf8';
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#e8792a';
+  ctx.stroke();
+
+  // 북쪽 표시 (희미하게, 원래 방향)
+  ctx.strokeStyle = 'rgba(74,54,35,0.15)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(c.x, c.y);
+  ctx.lineTo(c.x + 30 * Math.cos((c.baseAngle * Math.PI) / 180), c.y + 30 * Math.sin((c.baseAngle * Math.PI) / 180));
+  ctx.stroke();
+
+  // 바늘 (빨간색, 실제 방향)
+  ctx.strokeStyle = '#d64545';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(c.x - 28 * Math.cos(angleRad), c.y - 28 * Math.sin(angleRad));
+  ctx.lineTo(c.x + 28 * Math.cos(angleRad), c.y + 28 * Math.sin(angleRad));
+  ctx.stroke();
+
+  // 바늘 끝 (N)
+  ctx.fillStyle = '#d64545';
+  ctx.beginPath();
+  ctx.arc(c.x + 28 * Math.cos(angleRad), c.y + 28 * Math.sin(angleRad), 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fffef9';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawFieldRings();
+  drawWire();
+  compasses.forEach(drawCompass);
+
+  ctx.fillStyle = '#8a6a45';
+  ctx.font = '13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🧭 나침반', canvas.width / 2, 250 - 40 + 100);
+}
+
+function updateStatus() {
+  if (!circuitOn || currentStrength === 0) {
+    statusEl.textContent = '스위치를 눌러서 전류를 흘려보세요!';
+  } else {
+    const dirText = direction > 0 ? '오른쪽' : '왼쪽';
+    statusEl.textContent = `전류가 ${dirText}으로 흐르는 중 (세기 ${currentStrength}) — 나침반이 돌아가는 게 보이나요?`;
+  }
+}
+
+function animate() {
+  draw();
+  requestAnimationFrame(animate);
+}
+
+currentSlider.addEventListener('input', () => {
+  currentStrength = Number(currentSlider.value);
+  currentVal.textContent = currentStrength;
+  updateStatus();
+});
+
+switchBtn.addEventListener('click', () => {
+  circuitOn = !circuitOn;
+  switchBtn.textContent = circuitOn ? '🔌 회로 스위치: 켜짐' : '🔌 회로 스위치: 꺼짐';
+  switchBtn.classList.toggle('off', !circuitOn);
+  updateStatus();
+});
+
+dirBtn.addEventListener('click', () => {
+  direction *= -1;
+  updateStatus();
+});
+
+updateStatus();
+animate();
+</script>
+</body>
+</html>
