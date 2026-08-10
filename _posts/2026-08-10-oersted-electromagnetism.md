@@ -43,6 +43,16 @@ thumbnail: /assets/episodes/02-oersted/oersted_experiment.png
 
 또, 하늘에서 **번개**가 칠 때도 순간적으로 아주 강한 전류가 흐르면서 그 주변에 강한 자기장이 생겨요. 오로라(북극과 남극에서 보이는 신비로운 빛)도 태양에서 날아온 전기를 띤 입자들이 지구 자기장에 붙잡혀 생기는 현상이에요. 전기와 자석은 이렇게 자연 곳곳에서 짝을 이루어 함께 움직이고 있어요.
 
+### 조금 더 깊이 파보기: 지구는 왜 늘 북쪽을 가리키게 만들까?
+
+그런데 지구 속 액체 금속이 그냥 남쪽에서 북쪽으로 곧게 흐르는 건 아니에요. 지구가 빠르게 자전하기 때문에, 액체 금속의 움직임은 **자전축을 중심으로 빙글빙글 도는 여러 개의 전류 고리**로 정리돼요. 마치 전선을 동그랗게 감아 만든 코일(솔레노이드)에 전류를 흘리는 것과 똑같은 모습이에요.
+
+코일에 전류를 흘리면 코일 축 방향으로 N극과 S극이 생기죠? 지구도 마찬가지예요. 자전축을 중심으로 도는 이 전류 고리들이 합쳐지면서, 자전축과 거의 나란한 방향으로 하나의 커다란 막대자석 같은 자기장이 만들어져요. 오늘 배운 "원형 전류가 자기장을 만든다"는 원리가, 이번엔 지구 전체 크기로 나타난 셈이에요.
+
+![지구 속 액체 금속의 소용돌이가 만드는 자기장](/mathisto/assets/episodes/02-oersted/earth_geodynamo.png)
+
+여기서 정말 재미있는 사실이 하나 있어요. 물리학적으로 정확히 말하면, 지리상 **북극은 사실 자기적으로는 S극**이에요! 나침반 바늘의 N극은 자기 S극에 끌려가기 때문에, 지구 북쪽에 있는 자기 S극 쪽으로 끌려가서 늘 북쪽을 가리키는 거예요. 우리가 "북극"이라고 부르는 이름은 방향을 가리키는 편의상의 이름일 뿐, 자석의 성질로 보면 오히려 정반대라는 거죠.
+
 ---
 
 ## 직접 실험해보기 🧭
@@ -73,7 +83,7 @@ thumbnail: /assets/episodes/02-oersted/oersted_experiment.png
 
 - 1820년, 외르스테드는 전선에 전류를 흘렸을 때 옆에 있던 나침반이 움직이는 걸 발견했어요.
 - 전류가 흐르는 전선 주변에는 동그란 모양의 자기장이 생기고, 전류 방향이 바뀌면 자기장이 도는 방향도 바뀌어요(오른손 법칙).
-- 지구 내부에 흐르는 액체 금속이 지구 자기장을 만들어서, 나침반이 늘 북쪽을 가리킬 수 있게 해줘요.
+- 지구 내부에 흐르는 액체 금속이 자전축을 중심으로 도는 전류 고리(코일과 비슷해요)를 만들어서 지구 자기장을 만들고, 나침반이 늘 북쪽을 가리킬 수 있게 해줘요. 재미있게도 지리상 북극은 사실 자기적으로는 S극이에요!
 - 이 원리는 전동기, 발전기, 스피커, MRI처럼 지금 우리가 매일 쓰는 진짜 기술들의 기초가 되었어요.
 - 전기와 자석은 서로 다른 힘이 아니라, 사실 하나로 이어진 힘이었던 거예요!
 
@@ -81,4 +91,4 @@ thumbnail: /assets/episodes/02-oersted/oersted_experiment.png
 
 ---
 
-*참고 자료: [Hans Christian Ørsted — The Linda Hall Library](https://www.lindahall.org/about/news/scientist-of-the-day/hans-christian-oersted/), [Ørsted's Compass — Magnet Academy, National MagLab](https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/oersteds-compass-1820/), [Oersted, electric current and magnetism — IOPSpark](https://spark.iop.org/oersted-electric-current-and-magnetism), [July 1820: Oersted & Electromagnetism — APS News](https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism), [전자기 유도 — 위키백과](https://ko.wikipedia.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%B0_%EC%9C%A0%EB%8F%84), [로런츠 힘 — 위키백과](https://ko.wikipedia.org/wiki/%EB%A1%9C%EB%9F%B0%EC%B8%A0_%ED%9E%98)*
+*참고 자료: [Hans Christian Ørsted — The Linda Hall Library](https://www.lindahall.org/about/news/scientist-of-the-day/hans-christian-oersted/), [Ørsted's Compass — Magnet Academy, National MagLab](https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/oersteds-compass-1820/), [Oersted, electric current and magnetism — IOPSpark](https://spark.iop.org/oersted-electric-current-and-magnetism), [July 1820: Oersted & Electromagnetism — APS News](https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism), [전자기 유도 — 위키백과](https://ko.wikipedia.org/wiki/%EC%A0%84%EC%9E%90%EA%B8%B0_%EC%9C%A0%EB%8F%84), [로런츠 힘 — 위키백과](https://ko.wikipedia.org/wiki/%EB%A1%9C%EB%9F%B0%EC%B8%A0_%ED%9E%98), [Geodynamo — National Geographic / USGS Geomagnetism](https://www.usgs.gov/programs/geomagnetism), [지구자기장 — 위키백과](https://ko.wikipedia.org/wiki/%EC%A7%80%EA%B5%AC_%EC%9E%90%EA%B8%B0%EC%9E%A5)*
