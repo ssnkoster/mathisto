@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>벌집 설계 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #fff8e7 0%, #fef1d6 100%);
+    color: #4a3623;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    color: #b25c1e;
+  }
+  p.sub {
+    text-align: center;
+    margin-top: 0;
+    color: #8a6a45;
+    font-size: 0.95em;
+  }
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(178, 92, 30, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background: #fffef9;
+    border-radius: 16px;
+    border: 3px solid #f3ddb0;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    touch-action: none;
+  }
+  .controls { margin-top: 20px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .row label {
+    min-width: 150px;
+    font-weight: bold;
+    font-size: 0.92em;
+    color: #b25c1e;
+  }
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ffd699, #ff9d4d);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #e8792a;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #e8792a;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .val {
+    min-width: 90px;
+    text-align: right;
+    font-weight: bold;
+    color: #d9670c;
+  }
+  .btnrow {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  button.shapebtn {
+    background: #f3ddb0;
+    color: #b25c1e;
+    font-weight: 800;
+    padding: 10px 18px;
+    border-radius: 14px;
+    border: none;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+  button.shapebtn:active { transform: translateY(1px); }
+  button.shapebtn.active {
+    background: linear-gradient(90deg, #e08a1e, #d9670c);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(217, 103, 12, 0.35);
+  }
+  .readout {
+    margin-top: 18px;
+    background: #fff3da;
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 0.98em;
+    line-height: 1.6;
+  }
+  .readout b { color: #b25c1e; }
+  .stat-label {
+    text-align: center;
+    font-size: 1.15em;
+    font-weight: 800;
+    margin-top: 8px;
+  }
+  .good { color: #3f8f4f; }
+  .bad { color: #c0392b; }
+  .waxbar-wrap {
+    margin-top: 16px;
+    background: #fff3da;
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+  .waxbar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    font-size: 0.9em;
+  }
+  .waxbar-row .name { min-width: 66px; font-weight: bold; color: #b25c1e; }
+  .waxbar-track { flex: 1; background: #f3ddb0; border-radius: 8px; height: 16px; overflow: hidden; }
+  .waxbar-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, #ffb347, #d9670c); transition: width 0.3s ease; }
+  .waxbar-fill.win { background: linear-gradient(90deg, #6fc26f, #3f8f4f); }
+  .waxbar-num { min-width: 56px; text-align: right; font-weight: bold; color: #8a6a45; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐝 벌집 설계 실험실</h1>
+  <p class="sub">같은 넓이를 채울 때, 어떤 모양이 벌집 재료(밀랍)를 가장 적게 쓸까요?</p>
+
+  <div class="card">
+    <canvas id="cv" width="700" height="420"></canvas>
+
+    <div class="stat-label" id="statLabel">정육각형: 빈틈없이 이어지면서 재료도 가장 적게 써요!</div>
+
+    <div class="controls">
+      <div class="row">
+        <label for="sides">변의 개수</label>
+        <input type="range" id="sides" min="3" max="8" step="1" value="6">
+        <span class="val" id="sidesVal">6각형</span>
+      </div>
+    </div>
+
+    <div class="btnrow" id="shapeBtns"></div>
+
+    <div class="waxbar-wrap">
+      <div class="waxbar-row">
+        <span class="name">3각형</span>
+        <div class="waxbar-track"><div class="waxbar-fill" id="bar3" style="width:0%"></div></div>
+        <span class="waxbar-num" id="num3">-</span>
+      </div>
+      <div class="waxbar-row">
+        <span class="name">4각형</span>
+        <div class="waxbar-track"><div class="waxbar-fill" id="bar4" style="width:0%"></div></div>
+        <span class="waxbar-num" id="num4">-</span>
+      </div>
+      <div class="waxbar-row">
+        <span class="name">6각형</span>
+        <div class="waxbar-track"><div class="waxbar-fill" id="bar6" style="width:0%"></div></div>
+        <span class="waxbar-num" id="num6">-</span>
+      </div>
+    </div>
+
+    <div class="readout" id="readout">
+      벌집 방 하나의 <b>넓이는 똑같이</b> 두고, 모양만 바꿔볼게요. 슬라이더를 움직여서 삼각형, 사각형, 오각형, 육각형, 칠각형, 팔각형을 만들어보세요.
+      <b>3, 4, 6각형</b>만 빈틈없이 이어붙일 수 있어요. 그중에서 벽(둘레)의 길이가 가장 짧은 모양이 바로 <b>정육각형</b>이에요.
+      벽이 짧을수록 벌이 밀랍(벌집 재료)을 적게 쓰고도 튼튼한 방을 만들 수 있답니다!
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const sidesSlider = document.getElementById('sides');
+const sidesVal = document.getElementById('sidesVal');
+const statLabel = document.getElementById('statLabel');
+const readout = document.getElementById('readout');
+const shapeBtns = document.getElementById('shapeBtns');
+
+const AREA = 1800; // fixed area for all shapes
+
+function regularPolygon(n, area, cx, cy) {
+  const s = Math.sqrt(4*area*Math.tan(Math.PI/n)/n);
+  const R = s / (2*Math.sin(Math.PI/n));
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const a = Math.PI/2 + Math.PI/n + i*2*Math.PI/n;
+    pts.push([cx + R*Math.cos(a), cy + R*Math.sin(a)]);
+  }
+  return { pts, perimeter: n*s, R };
+}
+
+function tilesPerfectly(n) {
+  return n === 3 || n === 4 || n === 6;
+}
+
+// preset quick-select buttons
+[3,4,5,6,7,8].forEach(n => {
+  const b = document.createElement('button');
+  b.className = 'shapebtn' + (n===6 ? ' active' : '');
+  b.textContent = n + '각형';
+  b.dataset.n = n;
+  b.addEventListener('click', () => {
+    sidesSlider.value = n;
+    update();
+  });
+  shapeBtns.appendChild(b);
+});
+
+function drawSingleShape(n) {
+  ctx.clearRect(0,0,W,H);
+  const cx = W/2, cy = H/2 - 10;
+  const { pts, perimeter } = regularPolygon(n, AREA, cx, cy);
+
+  ctx.save();
+  const shapeColor = tilesPerfectly(n) ? '#e8792a' : '#c0392b';
+
+  if (tilesPerfectly(n)) {
+    const R = regularPolygon(n, AREA, 0, 0).R;
+    ctx.globalAlpha = 0.25;
+    for (let row=-2; row<=2; row++){
+      for (let col=-3; col<=3; col++){
+        let ox, oy;
+        if (n===6){ ox = col*R*Math.sqrt(3) + (row%2!==0? R*Math.sqrt(3)/2:0); oy = row*R*1.5; }
+        else if (n===4){ ox = col*R*Math.SQRT2; oy = row*R*Math.SQRT2; }
+        else { ox = col*R*1.5; oy = row*R*1.5*Math.sqrt(3)/2 + (col%2!==0? R*0.75:0); }
+        const p = regularPolygon(n, AREA, cx+ox, cy+oy).pts;
+        ctx.beginPath();
+        p.forEach(([x,y],i)=> i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
+        ctx.closePath();
+        ctx.fillStyle = '#ffb347';
+        ctx.fill();
+        ctx.strokeStyle = '#d9670c';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  } else {
+    const R = regularPolygon(n, AREA, 0,0).R;
+    const spacing = R*1.9;
+    ctx.globalAlpha = 0.22;
+    for (let row=-1; row<=1; row++){
+      for (let col=-2; col<=2; col++){
+        const ox = col*spacing, oy = row*spacing;
+        const p = regularPolygon(n, AREA, cx+ox, cy+oy).pts;
+        ctx.beginPath();
+        p.forEach(([x,y],i)=> i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
+        ctx.closePath();
+        ctx.fillStyle = '#c0392b';
+        ctx.fill();
+        ctx.strokeStyle = '#a02c20';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.beginPath();
+  pts.forEach(([x,y],i)=> i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
+  ctx.closePath();
+  ctx.fillStyle = shapeColor;
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#4a3623';
+  ctx.stroke();
+
+  ctx.fillStyle = '#4a3623';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('넓이는 항상 똑같아요', cx, H - 24);
+
+  return perimeter;
+}
+
+function update() {
+  const n = parseInt(sidesSlider.value, 10);
+  sidesVal.textContent = n + '각형';
+
+  document.querySelectorAll('.shapebtn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.n,10) === n);
+  });
+
+  const perim = drawSingleShape(n);
+
+  const p3 = regularPolygon(3, AREA, 0, 0).perimeter;
+  const p4 = regularPolygon(4, AREA, 0, 0).perimeter;
+  const p6 = regularPolygon(6, AREA, 0, 0).perimeter;
+  const maxP = Math.max(p3, p4, p6);
+  document.getElementById('bar3').style.width = (p3/maxP*100) + '%';
+  document.getElementById('bar4').style.width = (p4/maxP*100) + '%';
+  document.getElementById('bar6').style.width = (p6/maxP*100) + '%';
+  document.getElementById('num3').textContent = p3.toFixed(1);
+  document.getElementById('num4').textContent = p4.toFixed(1);
+  document.getElementById('num6').textContent = p6.toFixed(1);
+  document.getElementById('bar3').classList.remove('win');
+  document.getElementById('bar4').classList.remove('win');
+  document.getElementById('bar6').classList.add('win');
+
+  if (n === 6) {
+    statLabel.innerHTML = '<span class="good">정육각형: 빈틈없이 이어지면서 재료도 가장 적게 써요! ✅</span>';
+    readout.innerHTML = '드디어 <b>정육각형</b>이에요! 삼각형·사각형·육각형만 빈틈없이 이어붙일 수 있는데, 그중에서 <b>둘레(밀랍의 양)가 가장 짧은</b> 게 바로 육각형이에요. ' +
+      '그래서 벌은 오랜 진화를 거쳐 정육각형으로 집을 짓게 됐다고 여겨져요. 이 사실은 1999년 수학자 토마스 헤일스가 "육각형이 평면을 가장 적은 둘레로 나누는 방법"임을 완전히 증명하면서 수학적으로도 확인됐어요.';
+  } else if (tilesPerfectly(n)) {
+    statLabel.innerHTML = `<span class="good">${n}각형: 빈틈없이 이어지긴 하지만... 육각형보다 재료가 더 필요해요</span>`;
+    readout.innerHTML = `${n}각형도 빈틈없이 이어붙일 수 있는 몇 안 되는 모양이에요. 하지만 같은 넓이를 채우려면 정육각형보다 <b>둘레가 더 길어서</b> 밀랍이 더 많이 필요해요. 오른쪽 막대 그래프에서 비교해보세요!`;
+  } else {
+    statLabel.innerHTML = `<span class="bad">${n}각형: 이어붙이면 사이에 빈틈(구멍)이 생겨요 ❌</span>`;
+    readout.innerHTML = `${n}각형은 여러 개를 붙여서 평면을 빈틈없이 채울 수 없어요. 그림처럼 모양 사이에 빈 공간이 남아버려서, 벌집 재료로는 쓸모가 없어요. 벌은 이런 낭비 없이 완벽하게 맞물리는 모양만 써야 해요.`;
+  }
+}
+
+sidesSlider.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
