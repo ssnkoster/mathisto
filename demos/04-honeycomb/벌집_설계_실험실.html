@@ -217,7 +217,7 @@ function regularPolygon(n, area, cx, cy) {
     const a = Math.PI/2 + Math.PI/n + i*2*Math.PI/n;
     pts.push([cx + R*Math.cos(a), cy + R*Math.sin(a)]);
   }
-  return { pts, perimeter: n*s, R };
+  return { pts, perimeter: n*s, R, s };
 }
 
 function tilesPerfectly(n) {
@@ -296,12 +296,15 @@ function drawSingleShape(n) {
     }
     ctx.globalAlpha = 1;
   } else {
-    const R = regularPolygon(n, AREA, 0,0).R;
-    const spacing = R*1.9;
-    ctx.globalAlpha = 0.22;
-    for (let row=-1; row<=1; row++){
-      for (let col=-2; col<=2; col++){
-        const ox = col*spacing, oy = row*spacing;
+    // 오각형·칠각형·팔각형은 육각형처럼 최대한 촘촘하게(육각 패킹 방식으로) 붙여봐도
+    // 모양 사이사이에 삼각형·마름모 모양의 빈틈이 생겨요. 그걸 잘 보이게 그려요.
+    const R = regularPolygon(n, AREA, 0, 0).R;
+    const a = R * Math.cos(Math.PI / n); // 어펌(내접원 반지름) — 이웃과 거의 맞닿는 간격
+    ctx.globalAlpha = 0.28;
+    for (let row=-3; row<=3; row++){
+      for (let col=-4; col<=4; col++){
+        const ox = col*2*a + (Math.abs(row%2)===1 ? a : 0);
+        const oy = row*a*Math.sqrt(3);
         const p = regularPolygon(n, AREA, cx+ox, cy+oy).pts;
         ctx.beginPath();
         p.forEach(([x,y],i)=> i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
