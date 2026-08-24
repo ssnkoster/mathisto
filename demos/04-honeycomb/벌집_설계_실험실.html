@@ -240,7 +240,7 @@ function tilesPerfectly(n) {
 function drawSingleShape(n) {
   ctx.clearRect(0,0,W,H);
   const cx = W/2, cy = H/2 - 10;
-  const { pts, perimeter } = regularPolygon(n, AREA, cx, cy);
+  let { pts, perimeter } = regularPolygon(n, AREA, cx, cy);
 
   ctx.save();
   const shapeColor = tilesPerfectly(n) ? '#e8792a' : '#c0392b';
@@ -250,9 +250,11 @@ function drawSingleShape(n) {
     const { s } = regularPolygon(3, AREA, 0, 0);
     const h = s * Math.sqrt(3) / 2;
     const V = (i, j) => [cx + i*s + j*s/2, cy + j*h];
+    // 강조용 삼각형도 격자에서 중앙에 가장 가까운 칸을 그대로 가져와서, 배경과 이음매 없이 딱 맞물리게 해요.
+    pts = [V(0,-1), V(1,-1), V(0,0)];
     ctx.globalAlpha = 0.25;
-    for (let j = -2; j <= 2; j++) {
-      for (let i = -2; i <= 2; i++) {
+    for (let j = -3; j <= 2; j++) {
+      for (let i = -1; i <= 2; i++) {
         const cells = [
           [V(i,j), V(i+1,j), V(i,j+1)],
           [V(i+1,j), V(i,j+1), V(i+1,j+1)]
