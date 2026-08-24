@@ -251,8 +251,8 @@ function drawSingleShape(n) {
     const h = s * Math.sqrt(3) / 2;
     const V = (i, j) => [cx + i*s + j*s/2, cy + j*h];
     ctx.globalAlpha = 0.25;
-    for (let j = -4; j <= 4; j++) {
-      for (let i = -7; i <= 7; i++) {
+    for (let j = -2; j <= 2; j++) {
+      for (let i = -2; i <= 2; i++) {
         const cells = [
           [V(i,j), V(i+1,j), V(i,j+1)],
           [V(i+1,j), V(i,j+1), V(i+1,j+1)]
