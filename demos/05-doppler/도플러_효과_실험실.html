@@ -169,7 +169,7 @@
     <div class="controls">
       <div class="row">
         <label for="speed">🚑 구급차 속도</label>
-        <input type="range" id="speed" min="0" max="45" value="20" step="1">
+        <input type="range" id="speed" min="0" max="60" value="28" step="1">
         <span class="val" id="speedVal">20 m/s</span>
       </div>
       <div class="row">
@@ -200,7 +200,9 @@
       💡 <b>왜 이런 일이 생길까요?</b><br>
       구급차가 나에게 다가올 때는 소리 파동이 앞쪽에서 <b>촘촘하게 쌓여서</b> 내 귀에 더 자주 도착해요. 그래서 소리가 <b>높게</b> 들려요.
       반대로 구급차가 나를 지나쳐 멀어지면 파동이 <b>넓게 퍼져서</b> 더 뜸하게 도착해요. 그래서 소리가 <b>낮게</b> 들려요.
-      구급차 속도를 더 빠르게 하면 이 변화가 훨씬 더 크게 느껴진답니다!
+      구급차 속도를 더 빠르게 하면 원 간격이 앞쪽은 더 다닥다닥 붙고 뒤쪽은 더 널찍하게 벌어지는 게 눈으로도 보일 거예요!
+      <br><br>
+      🔧 <b>살짝 알려드려요:</b> 실제 소리 속도는 초당 343m라서, 구급차 속도로는 그 차이가 화면에 잘 안 보여요. 그래서 이 실험실에서는 원리는 완전히 똑같이 두고 '소리 속도'만 초당 90m로 줄여서, 압축·확장 효과와 음높이 차이를 훨씬 뚜렷하게 보고 들을 수 있게 만들었어요.
     </div>
   </div>
 
@@ -224,7 +226,11 @@ const playBtn = document.getElementById('playBtn');
 const resetBtn = document.getElementById('resetBtn');
 const soundBtn = document.getElementById('soundBtn');
 
-const SOUND_SPEED = 343; // m/s, 실제 공기 중 소리 속도
+// 실제 공기 중 소리 속도는 초당 343m이지만, 그 속도로는 화면에서 파동 간격 차이가
+// 거의 안 보여요(구급차 속도가 소리 속도의 10~15%밖에 안 되거든요).
+// 그래서 이 실험실에서는 원리는 그대로 두고 '소리 속도'를 초당 90m로 줄여서,
+// 압축·확장 효과와 음높이 차이를 눈과 귀로 뚜렷하게 느낄 수 있게 했어요.
+const SOUND_SPEED = 90; // m/s (실험을 위해 단순화한 값)
 const PIXELS_PER_METER = 4.2;
 
 let carSpeed = parseFloat(speedSlider.value);
