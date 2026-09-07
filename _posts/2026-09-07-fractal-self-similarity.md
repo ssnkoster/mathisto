@@ -49,6 +49,8 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 
 ![자연과 기술 속에 숨어있는 '자기유사성' — 작은 부분이 전체를 닮았어요](/mathisto/assets/episodes/06-fractal/self_similarity_examples.png)
 
+그런데 여기서 궁금증이 하나 생겨요. 표면적이 넓을수록 좋다면, 왜 혈관이나 나뭇가지는 무한히 잘게 갈라지지 않을까요? 답은 **비용** 때문이에요. 혈관이 너무 가늘고 많아지면 피를 그 구석구석까지 밀어내는 데 훨씬 더 많은 에너지가 들고, 혈관 자체를 유지하는 데 드는 재료(세포)도 늘어나요. 그래서 우리 몸의 혈관과 기관지는 "머리 법칙(Murray's law)"이라는 수학적 비율을 따라 갈라져요. 굵은 혈관 하나가 가는 혈관 두 개로 나뉠 때, **굵은 혈관 반지름의 세제곱이 가는 혈관들 반지름의 세제곱을 합한 것과 같아지도록** 갈라지는 거예요. 이 비율을 지키면 피를 미는 데 드는 에너지와 혈관을 유지하는 비용을 동시에 가장 적게 쓸 수 있다는 게 밝혀졌어요. 표면적을 넓히는 이득과, 그걸 만들고 운영하는 비용 사이에서 자연이 찾아낸 최적의 타협점인 셈이에요.
+
 ---
 
 ## 직접 실험해보기 ❄️
@@ -70,16 +72,27 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 
 ---
 
+## 아직 연구 중인 아이디어: 프랙탈로 열도 식힐 수 있을까?
+
+안테나 말고 또 어디에 프랙탈을 쓸 수 있을까요? 앞에서 배운 "좁은 공간에 표면적을 최대한 늘린다"는 원리를 떠올려보면, 열을 식히는 **방열판**에도 딱 맞을 것 같지 않나요? 실제로 많은 과학자들이 똑같은 생각을 하고 있어요.
+
+요즘 AI 컴퓨터가 모여있는 데이터센터는 열이 어마어마하게 많이 나서, 칩 바로 위로 냉각수를 흘려보내는 초미세 냉각 통로(마이크로채널)를 만들어요. 이 통로를 나뭇가지나 혈관처럼 프랙탈 모양으로 계속 갈라지게 설계하면, 냉각수가 흐르기 어려워지는 손해는 줄이면서 열이 닿는 표면적은 최대한 늘릴 수 있다는 연구들이 최근 활발히 나오고 있어요.
+
+다만 이건 아직 **논문과 실험실 단계의 아이디어**예요. 우리 몸의 혈관이 "머리 법칙"이라는 정확한 비율로 무한히 갈라지지 않고 멈추는 것처럼, 프랙탈 냉각 통로도 너무 잘게 만들면 정밀 가공 비용이 치솟고 냉각수가 통과하기 더 힘들어져서, 이득보다 손해가 커질 수 있어요. 실제로 지금 데이터센터에서 널리 쓰이는 냉각판은 프랙탈 구조보다는 좀 더 단순한 형태예요. 하지만 "자연이 찾아낸 답을 공학에 그대로 옮겨보자"는 이 아이디어는 지금 이 순간에도 여러 연구팀이 검증하고 있는, 꽤 유망한 도전이랍니다.
+
+---
+
 ## 오늘의 정리
 
 - 같은 규칙(변의 가운데를 뾰족하게 접어 넣기)을 계속 반복하면, 둘레는 끝없이 길어지지만 넓이는 유한한 "코흐 눈송이" 같은 도형이 만들어져요. 이런 도형을 **프랙탈**이라고 해요.
 - 프랙탈의 아무 부분이나 확대해도 전체와 비슷한 모양이 반복되는 성질을 **자기유사성**이라고 해요.
 - 해안선도 프랙탈처럼 자기유사성을 가지고 있어서, 자를 작게 쓸수록 측정한 길이가 점점 길어져요(해안선 역설).
-- 자연 속에는 나뭇가지, 번개, 폐 속 기관지처럼 자기유사성을 가진 구조가 많아요.
+- 자연 속에는 나뭇가지, 번개, 폐 속 기관지처럼 자기유사성을 가진 구조가 많아요. 다만 표면적을 무한히 늘리지 않고 "머리 법칙"이라는 정확한 비율에서 멈추는데, 이는 에너지·재료 비용과 이득 사이의 최적 타협점이에요.
 - 이 원리는 실제로 스마트폰과 와이파이 공유기의 **프랙탈 안테나**에 쓰이고 있어요. 좁은 공간에 긴 전선을 접어 넣어 여러 주파수를 한 번에 잡을 수 있게 해줘요.
+- 같은 원리를 데이터센터의 컴퓨터 냉각에 쓰려는 연구도 활발한데, 이건 아직 상용화 전, 연구·실험 단계의 아이디어예요.
 
 다음에 나뭇가지나 번개 사진을 보면, "어, 이거 작은 부분도 전체랑 똑같이 생겼네!" 하고 한번 떠올려보세요. 그리고 내 손 안의 스마트폰 속에도 이 원리가 숨어있다는 걸 기억해주세요!
 
 ---
 
-*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html)*
+*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html), [Murray's law revisited: Quémada's fluid model and fractal trees](https://arxiv.org/pdf/1501.03546), [A fractal geometry enhanced topology optimization design for high-performance liquid cooling plates](https://arxiv.org/pdf/2603.26437)*
