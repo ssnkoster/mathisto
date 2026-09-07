@@ -84,6 +84,19 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 
 ---
 
+## 정리해보면: 프랙탈은 "무언가를 많이 흡수하거나 방출해야 할 때" 쓰여요
+
+지금까지 본 사례들을 곰곰이 보면 공통된 패턴이 하나 보여요. 전파(안테나), 열(방열판·냉난방), 산소·양분(폐·나뭇가지) 모두 "**좁은 공간 안에서 무언가를 최대한 많이 흡수하거나 내보내야 하는 상황**"이었어요. 이 패턴을 다른 물질에도 대입해보면, 프랙탈이 이미 훨씬 넓은 곳에서 쓰이고 있다는 걸 알 수 있어요.
+
+- **소리**: 녹음실이나 공연장 벽에 붙이는 음향 패널 중에는 같은 확산 구조를 계속 축소해서 겹쳐 넣은 프랙탈 디자인이 있어요. 넓은 음역대의 소리를 고르게 흡수·확산시켜줘요. 이미 실제로 팔리는 확립된 제품이에요.
+- **화학물질(냄새·독성 기체)**: 정수기나 공기청정기 속 활성탄은 아주 미세한 구멍들이 프랙탈 구조를 이루고 있어서, 손톱만한 조각 하나에도 축구장만한 표면적을 담을 수 있어요. 이 표면에 냄새나 오염물질이 달라붙는 거예요. 자동차 배기가스를 정화하는 촉매 변환기도 같은 원리를 써요. 이미 실제로 오래전부터 널리 쓰이는 확립된 기술이에요.
+- **이산화탄소(온실가스)**: MOF(금속-유기 골격체)라는 신소재는 내부에 매우 복잡하고 넓은 표면을 가져서 공기 중 CO2를 효율적으로 붙잡을 수 있어요. 기후 위기 대응 기술로 활발히 연구되고 있지만, 아직 발전소·공장에 표준으로 설치된 단계는 아니고 실증 파일럿 프로젝트가 많은 연구·개발 단계예요.
+- **물(정수·담수화)**: 2025년에는 소금 결정을 일부러 프랙탈 모양으로 키운 뒤 그 틀로 정수 필터막을 만드는 연구가 발표됐어요. 물이 통과하는 속도가 기존 상업용 막보다 훨씬 빨라져서, 전기 없이 손 펌프만으로도 짧은 시간에 깨끗한 물을 만들 수 있다는 결과가 나왔어요. 아주 유망하지만 아직 논문 단계이고 상용 제품으로는 나오지 않았어요.
+
+이렇게 정리해보면, "무언가를 흡수하거나 방출해야 하는데 공간이 제한적인 상황"이라면 거의 항상 프랙탈이 후보로 등장해요. 그중에서도 소리와 화학 흡착·촉매는 이미 우리 생활 곳곳에 자리 잡은 확립된 기술이고, CO2 포집과 물 정화는 최근 논문에서 좋은 성과를 보여주고 있는 유망한 연구 단계예요.
+
+---
+
 ## 오늘의 정리
 
 - 같은 규칙(변의 가운데를 뾰족하게 접어 넣기)을 계속 반복하면, 둘레는 끝없이 길어지지만 넓이는 유한한 "코흐 눈송이" 같은 도형이 만들어져요. 이런 도형을 **프랙탈**이라고 해요.
@@ -92,9 +105,10 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 - 자연 속에는 나뭇가지, 번개, 폐 속 기관지처럼 자기유사성을 가진 구조가 많아요. 다만 표면적을 무한히 늘리지 않고 "머리 법칙"이라는 정확한 비율에서 멈추는데, 이는 에너지·재료 비용과 이득 사이의 최적 타협점이에요.
 - 이 원리는 실제로 스마트폰과 와이파이 공유기의 **프랙탈 안테나**에 쓰이고 있어요. 좁은 공간에 긴 전선을 접어 넣어 여러 주파수를 한 번에 잡을 수 있게 해줘요.
 - 같은 원리를 데이터센터의 컴퓨터 냉각이나 가정용 냉난방(보일러·라디에이터) 열교환기에 쓰려는 연구도 활발한데, 이건 아직 상용화 전, 연구·특허 단계의 아이디어예요.
+- "좁은 공간에서 무언가를 많이 흡수·방출해야 하는" 상황이라면 프랙탈이 두루 후보가 돼요. 음향 패널과 활성탄·촉매는 이미 확립된 기술이고, CO2 포집(MOF)과 정수 필터막은 최근 유망한 연구 단계예요.
 
 다음에 나뭇가지나 번개 사진을 보면, "어, 이거 작은 부분도 전체랑 똑같이 생겼네!" 하고 한번 떠올려보세요. 그리고 내 손 안의 스마트폰 속에도 이 원리가 숨어있다는 걸 기억해주세요!
 
 ---
 
-*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html), [Murray's law revisited: Quémada's fluid model and fractal trees](https://arxiv.org/pdf/1501.03546), [A fractal geometry enhanced topology optimization design for high-performance liquid cooling plates](https://arxiv.org/pdf/2603.26437), [Numerical simulation on heat transfer characteristics of a bionic leaf-vein fractal fin heat exchanger — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC12894825/), [Review of Fractal Heat Exchangers — Purdue e-Pubs](https://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=2724&context=iracc)*
+*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html), [Murray's law revisited: Quémada's fluid model and fractal trees](https://arxiv.org/pdf/1501.03546), [A fractal geometry enhanced topology optimization design for high-performance liquid cooling plates](https://arxiv.org/pdf/2603.26437), [Numerical simulation on heat transfer characteristics of a bionic leaf-vein fractal fin heat exchanger — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC12894825/), [Review of Fractal Heat Exchangers — Purdue e-Pubs](https://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=2724&context=iracc), [Diffractal — Acoustic GRG](https://acousticgrg.co.uk/category/diffractal), [Fractal Modelling of Heterogeneous Catalytic Materials and Processes](https://doi.org/10.3390/ma17215363), [Carbon Dioxide Capture and Conversion Using Metal–Organic Framework (MOF) Materials — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC11356948/), [Fractal-inspired ultrapermeable membranes for electricity-free portable nanofiltration — Nature Water](https://www.nature.com/articles/s44221-025-00551-3)*
