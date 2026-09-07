@@ -80,6 +80,8 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 
 다만 이건 아직 **논문과 실험실 단계의 아이디어**예요. 우리 몸의 혈관이 "머리 법칙"이라는 정확한 비율로 무한히 갈라지지 않고 멈추는 것처럼, 프랙탈 냉각 통로도 너무 잘게 만들면 정밀 가공 비용이 치솟고 냉각수가 통과하기 더 힘들어져서, 이득보다 손해가 커질 수 있어요. 실제로 지금 데이터센터에서 널리 쓰이는 냉각판은 프랙탈 구조보다는 좀 더 단순한 형태예요. 하지만 "자연이 찾아낸 답을 공학에 그대로 옮겨보자"는 이 아이디어는 지금 이 순간에도 여러 연구팀이 검증하고 있는, 꽤 유망한 도전이랍니다.
 
+그런데 이 아이디어, 사실 우리 집 냉난방에도 적용해볼 수 있어요! 에어컨 실외기나 보일러, 라디에이터 안에는 열을 주고받는 얇은 금속판인 "핀(fin)"이 촘촘히 박혀있는데, 이 핀을 나뭇잎의 잎맥처럼 프랙탈 모양으로 만들면 열교환 효율이 크게 오른다는 연구가 있어요. 실제로 가정용 냉난방(HVAC) 기기에 적용했을 때의 경제성을 따져본 연구에서는, 프랙탈 핀이 복잡한 모양 때문에 제작비는 기존보다 약 15% 더 들지만 열전달 효율은 약 51.6%나 높아져서, 그 차이를 에너지 절감으로 충분히 메꿀 수 있다는 결과가 나왔어요. 가정용 보일러·라디에이터에 쓸 수 있는 프랙탈 구조 열교환기 특허도 이미 출원돼 있고요. 데이터센터 냉각보다 오히려 "상용화하면 이득이 있다"는 구체적인 계산까지 나온 셈이지만, 이것도 아직 논문·특허 단계라서 실제로 우리 집 보일러나 에어컨 안에 들어가려면 몇 년은 더 걸릴 것 같아요.
+
 ---
 
 ## 오늘의 정리
@@ -89,10 +91,10 @@ thumbnail: /assets/episodes/06-fractal/koch_snowflake_growth.png
 - 해안선도 프랙탈처럼 자기유사성을 가지고 있어서, 자를 작게 쓸수록 측정한 길이가 점점 길어져요(해안선 역설).
 - 자연 속에는 나뭇가지, 번개, 폐 속 기관지처럼 자기유사성을 가진 구조가 많아요. 다만 표면적을 무한히 늘리지 않고 "머리 법칙"이라는 정확한 비율에서 멈추는데, 이는 에너지·재료 비용과 이득 사이의 최적 타협점이에요.
 - 이 원리는 실제로 스마트폰과 와이파이 공유기의 **프랙탈 안테나**에 쓰이고 있어요. 좁은 공간에 긴 전선을 접어 넣어 여러 주파수를 한 번에 잡을 수 있게 해줘요.
-- 같은 원리를 데이터센터의 컴퓨터 냉각에 쓰려는 연구도 활발한데, 이건 아직 상용화 전, 연구·실험 단계의 아이디어예요.
+- 같은 원리를 데이터센터의 컴퓨터 냉각이나 가정용 냉난방(보일러·라디에이터) 열교환기에 쓰려는 연구도 활발한데, 이건 아직 상용화 전, 연구·특허 단계의 아이디어예요.
 
 다음에 나뭇가지나 번개 사진을 보면, "어, 이거 작은 부분도 전체랑 똑같이 생겼네!" 하고 한번 떠올려보세요. 그리고 내 손 안의 스마트폰 속에도 이 원리가 숨어있다는 걸 기억해주세요!
 
 ---
 
-*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html), [Murray's law revisited: Quémada's fluid model and fractal trees](https://arxiv.org/pdf/1501.03546), [A fractal geometry enhanced topology optimization design for high-performance liquid cooling plates](https://arxiv.org/pdf/2603.26437)*
+*참고 자료: [Coastline paradox — Wikipedia](https://en.wikipedia.org/wiki/Coastline_paradox), [Coastline Paradox — Britannica](https://www.britannica.com/science/coastline-paradox), [Fractal dimension — Wikipedia](https://en.wikipedia.org/wiki/Fractal_dimension), [Why Mobile Phones Can Do So Many Things: The Invention of The Fractal Antenna — IEEE-USA InSight](https://insight.ieeeusa.org/articles/why-mobile-phones-can-do-so-many-things-the-invention-of-the-fractal-antenna/), [Fractal Antenna Systems — Mobile Device Solutions](http://fractenna.com/commercial/mobile.html), [Murray's law revisited: Quémada's fluid model and fractal trees](https://arxiv.org/pdf/1501.03546), [A fractal geometry enhanced topology optimization design for high-performance liquid cooling plates](https://arxiv.org/pdf/2603.26437), [Numerical simulation on heat transfer characteristics of a bionic leaf-vein fractal fin heat exchanger — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC12894825/), [Review of Fractal Heat Exchangers — Purdue e-Pubs](https://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=2724&context=iracc)*
