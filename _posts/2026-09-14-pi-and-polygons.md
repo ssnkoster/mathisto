@@ -35,15 +35,21 @@ thumbnail: /assets/episodes/07-pi/polygon_to_circle.png
 
 ---
 
-## 원 위를 빙글빙글 돌면 파도가 생겨요
+## 원 위를 빙글빙글 돌면 왜 파도가 생길까요?
 
 다각형의 각 꼭짓점은 원의 중심에서 보면 특정한 "각도"에 있어요. 그런데 이 각도와 원 위의 점의 높이(위아래 위치) 사이에는 아주 재미있는 관계가 있어요. 바로 **사인(sin)**과 **코사인(cos)**이라는 함수예요.
 
-원 위에서 점 하나가 빙글빙글 돈다고 생각해보세요. 그 점의 높이는 각도에 따라 오르락내리락 해요. 이 오르내림을 옆으로 쭉 펼쳐서 그래프로 그리면, 놀랍게도 **파도 모양**이 나와요!
+원 위에서 점 하나가 **일정한 속도로** 빙글빙글 돈다고 생각해보세요. 그 점의 높이만 뚝 떼서 본다면 어떻게 움직일까요? 맨 위(12시 방향)에 있을 때는 잠깐 멈춘 것처럼 느리게 움직이고, 옆(3시나 9시 방향)을 지날 때는 위아래로 가장 빠르게 움직여요. 이렇게 "위쪽에서는 느리고 옆쪽에서는 빠른" 높이 변화를, 시간 순서대로 오른쪽으로 쭉 이어서 찍어보면 놀랍게도 **파도 모양**이 그려져요!
 
-![원 위의 점이 회전하면서 만드는 사인파](/mathisto/assets/episodes/07-pi/circle_to_sine_wave.png)
+![회전하는 점의 높이를 옆으로 옮겨 찍으면 사인파가 만들어져요](/mathisto/assets/episodes/07-pi/circle_to_wave_causal.png)
 
-이 파도 모양(사인파)은 그냥 예쁜 그림이 아니에요. 소리, 빛, 물결처럼 우리 주변의 수많은 "파동" 현상이 전부 이 모양을 따라요. 원과 다각형을 연구하다가 자연스럽게 튀어나온 sin·cos이, 알고 보니 파동의 세계를 설명하는 만능 열쇠였던 거예요.
+즉, 사인파는 그냥 예쁘게 생긴 곡선이 아니라 **"일정한 속도로 도는 원운동을 옆에서 바라본 그림자"**예요. 회전하는 관람차에 전등을 하나 달고 캄캄한 벽에 그림자를 비춰본다면, 그 그림자는 벽 위에서 사인파처럼 오르내릴 거예요.
+
+그런데 더 재미있는 사실이 있어요. 원운동이 아니어도 상관없어요! 그네나 시계추처럼 **일정한 리듬으로 좌우(또는 앞뒤)로 흔들리는 것**은 전부 똑같은 사인파 모양의 움직임을 그려요. 이런 흔들림을 물리학에서는 "단진동"이라고 불러요.
+
+![그네·진자의 흔들림도 사인파를 그려요](/mathisto/assets/episodes/07-pi/shm_sine_comparison.png)
+
+정리하면, 사인파는 원운동이든 그네의 흔들림이든 **"일정한 리듬으로 반복되는 모든 움직임"**에서 공통으로 나타나는 모양이에요. 그래서 소리, 빛, 물결처럼 우리 주변의 수많은 "파동" 현상이 전부 이 모양을 따르는 거예요. 원과 다각형을 연구하다가 자연스럽게 튀어나온 sin·cos이, 알고 보니 파동의 세계를 설명하는 만능 열쇠였던 셈이에요.
 
 ---
 
@@ -72,18 +78,20 @@ GPS는 지구 주위를 도는 위성들의 위치를 계산해서 내 위치를
 
 이건 미래에 쓰일 아이디어가 아니라, **지금 이 순간에도 전 세계 스마트폰과 내비게이션이 실제로 쓰고 있는 확립된 기술**이에요. 아르키메데스가 원을 다각형으로 포위해서 원주율을 계산하려던 노력이, 수천 년 뒤 인공위성으로 내 위치를 찾는 일에까지 이어진 셈이에요.
 
+또 하나, 우리 집에 들어오는 **전기**에도 사인파의 원리가 그대로 숨어있어요. 발전소에서는 자석이나 코일을 **일정한 속도로 빙글빙글 돌려서** 전기를 만들어요. 앞에서 본 것처럼 일정한 속도로 도는 물체를 옆에서 보면 사인파 모양의 움직임이 나오는데, 이때 만들어지는 전압도 정확히 그 모양(사인파)을 따라요. 그래서 우리가 쓰는 전기를 "교류(AC)"라고 부르고, 그 파형이 사인파인 거예요. 이것도 지금 이 순간 전 세계 발전소에서 실제로 쓰이고 있는 확립된 원리랍니다.
+
 ---
 
 ## 오늘의 정리
 
 - 원의 둘레를 지름으로 나누면 크기와 상관없이 항상 같은 숫자, **원주율(π ≈ 3.14159...)**이 나와요.
 - 아르키메데스는 곡선인 원을 직선인 **다각형으로 안팎에서 포위**해서, 다각형의 변을 계속 늘려가며 원주율을 점점 더 정확하게 좁혀나갔어요. 변 96개짜리 다각형으로 3.1408~3.1429 사이라는 걸 알아냈어요.
-- 원 위의 점이 회전할 때 생기는 높이 변화를 펼치면 **사인파**가 나와요. 이건 소리·빛·물결 같은 파동 현상을 설명하는 기초가 돼요.
+- 일정한 속도로 도는 원운동의 높이를 옆으로 옮겨 찍으면 **사인파**가 나와요. 그네·진자처럼 일정한 리듬으로 흔들리는 움직임(단진동)도 똑같은 사인파를 그려요. 그래서 소리·빛·물결 같은 파동 현상이 전부 이 모양을 따라요.
 - 일상에서는 바퀴가 한 바퀴 구를 때 이동하는 거리(둘레)를 계산하는 데 원주율이 쓰여요.
-- 원과 다각형에서 나온 삼각함수(sin·cos)는 오늘날 **GPS 위성 위치 계산**에 실제로, 지금도 쓰이는 확립된 기술이에요.
+- 원과 다각형에서 나온 삼각함수(sin·cos)는 오늘날 **GPS 위성 위치 계산**과 **발전소의 교류(AC) 전기 생산**(회전자가 일정한 속도로 돌면서 사인파 모양의 전압을 만듦)에 실제로, 지금도 쓰이는 확립된 기술이에요.
 
 다음에 자전거를 타거나 GPS로 길을 찾을 때, "어? 여기 원주율이 숨어있겠구나!" 하고 한번 떠올려보세요!
 
 ---
 
-*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117)*
+*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117), [Electric Generators — Lumen Learning Physics](https://courses.lumenlearning.com/suny-physics/chapter/23-5-electric-generators/), [10.5: AC Generator — Physics LibreTexts](https://phys.libretexts.org/Bookshelves/Electricity_and_Magnetism/Electricity_and_Magnetism_(Tatum)/10:_Electromagnetic_Induction/10.05:_AC_Generator)*
