@@ -80,6 +80,10 @@ GPS는 지구 주위를 도는 위성들의 위치를 계산해서 내 위치를
 
 또 하나, 우리 집에 들어오는 **전기**에도 사인파의 원리가 그대로 숨어있어요. 발전소에서는 자석이나 코일을 **일정한 속도로 빙글빙글 돌려서** 전기를 만들어요. 앞에서 본 것처럼 일정한 속도로 도는 물체를 옆에서 보면 사인파 모양의 움직임이 나오는데, 이때 만들어지는 전압도 정확히 그 모양(사인파)을 따라요. 그래서 우리가 쓰는 전기를 "교류(AC)"라고 부르고, 그 파형이 사인파인 거예요. 이것도 지금 이 순간 전 세계 발전소에서 실제로 쓰이고 있는 확립된 원리랍니다.
 
+그런데 여기서 궁금증이 하나 생겨요. 발전기가 **1초에 정확히 몇 바퀴** 돌아야 할까요? 우리나라와 미국은 발전기가 1초에 **60번** 돌도록(60Hz) 맞춰져 있고, 유럽이나 일본 동부 지역 등 다른 많은 나라는 1초에 **50번**(50Hz) 돌도록 맞춰져 있어요. 콘센트에 꽂은 전자제품 뒷면을 보면 "60Hz"라고 쓰여 있는 걸 본 적 있을 거예요. 그 숫자가 바로 발전기가 1초에 도는 횟수, 즉 사인파가 1초에 몇 번 반복되는지를 나타내는 거예요.
+
+왜 나라마다 다를까요? 이건 원리의 문제가 아니라 **역사와 선택**의 문제예요. 1891년, 미국의 웨스팅하우스는 60Hz를, 독일의 AEG는 50Hz를 각각 표준으로 정했어요. 50Hz는 미터법과 딱 맞아떨어지는 계산의 편리함과 송전 과정에서 에너지 손실을 줄이는 데 유리했고, 60Hz는 전구가 깜빡이는 걸 줄이고 모터를 더 작고 효율적으로 만드는 데 유리했다고 해요. 그 뒤로 미국의 영향을 받은 나라(미국, 우리나라, 일본 동부 등)는 60Hz를, 독일의 영향을 받은 유럽·아시아 대부분 나라는 50Hz를 따라가면서 지금까지 두 표준이 나란히 쓰이고 있어요. 어느 쪽이 더 뛰어나서가 아니라, 130년도 더 된 기업들의 서로 다른 선택이 지금까지 이어지고 있는 셈이에요.
+
 ---
 
 ## 오늘의 정리
@@ -89,9 +93,10 @@ GPS는 지구 주위를 도는 위성들의 위치를 계산해서 내 위치를
 - 일정한 속도로 도는 원운동의 높이를 옆으로 옮겨 찍으면 **사인파**가 나와요. 그네·진자처럼 일정한 리듬으로 흔들리는 움직임(단진동)도 똑같은 사인파를 그려요. 그래서 소리·빛·물결 같은 파동 현상이 전부 이 모양을 따라요.
 - 일상에서는 바퀴가 한 바퀴 구를 때 이동하는 거리(둘레)를 계산하는 데 원주율이 쓰여요.
 - 원과 다각형에서 나온 삼각함수(sin·cos)는 오늘날 **GPS 위성 위치 계산**과 **발전소의 교류(AC) 전기 생산**(회전자가 일정한 속도로 돌면서 사인파 모양의 전압을 만듦)에 실제로, 지금도 쓰이는 확립된 기술이에요.
+- 발전기가 1초에 도는 횟수가 곧 전기의 주파수예요. 우리나라·미국은 60Hz, 유럽 등은 50Hz를 쓰는데, 이건 원리 차이가 아니라 1891년 웨스팅하우스(60Hz)와 AEG(50Hz)가 각자 다른 표준을 정한 역사적 선택이 지금까지 이어진 거예요.
 
 다음에 자전거를 타거나 GPS로 길을 찾을 때, "어? 여기 원주율이 숨어있겠구나!" 하고 한번 떠올려보세요!
 
 ---
 
-*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117), [Electric Generators — Lumen Learning Physics](https://courses.lumenlearning.com/suny-physics/chapter/23-5-electric-generators/), [10.5: AC Generator — Physics LibreTexts](https://phys.libretexts.org/Bookshelves/Electricity_and_Magnetism/Electricity_and_Magnetism_(Tatum)/10:_Electromagnetic_Induction/10.05:_AC_Generator)*
+*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117), [Electric Generators — Lumen Learning Physics](https://courses.lumenlearning.com/suny-physics/chapter/23-5-electric-generators/), [10.5: AC Generator — Physics LibreTexts](https://phys.libretexts.org/Bookshelves/Electricity_and_Magnetism/Electricity_and_Magnetism_(Tatum)/10:_Electromagnetic_Induction/10.05:_AC_Generator), [Why Europe Uses 50Hz vs US 60Hz Power Frequency History](https://industrialmonitordirect.com/blogs/knowledgebase/why-europe-uses-50hz-and-us-uses-60hz-power-frequency), [Why Do We Use 50 Hz or 60 Hz Frequency for Power Systems? — Electrical4U](https://www.electrical4u.com/why-supply-frequency-is-50-hz-or-60-hz/)*
