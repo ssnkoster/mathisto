@@ -84,6 +84,32 @@ GPS는 지구 주위를 도는 위성들의 위치를 계산해서 내 위치를
 
 왜 나라마다 다를까요? 이건 원리의 문제가 아니라 **역사와 선택**의 문제예요. 1891년, 미국의 웨스팅하우스는 60Hz를, 독일의 AEG는 50Hz를 각각 표준으로 정했어요. 50Hz는 미터법과 딱 맞아떨어지는 계산의 편리함과 송전 과정에서 에너지 손실을 줄이는 데 유리했고, 60Hz는 전구가 깜빡이는 걸 줄이고 모터를 더 작고 효율적으로 만드는 데 유리했다고 해요. 그 뒤로 미국의 영향을 받은 나라(미국, 우리나라, 일본 동부 등)는 60Hz를, 독일의 영향을 받은 유럽·아시아 대부분 나라는 50Hz를 따라가면서 지금까지 두 표준이 나란히 쓰이고 있어요. 어느 쪽이 더 뛰어나서가 아니라, 130년도 더 된 기업들의 서로 다른 선택이 지금까지 이어지고 있는 셈이에요.
 
+## 그럼 110V, 220V, 380V는 또 뭘까요?
+
+주파수(Hz)가 "사인파가 1초에 몇 번 반복되는지"라면, **전압(V, 볼트)**은 "전기가 얼마나 세게 밀어주는지"를 나타내요. 사인파의 반복 횟수가 아니라 **파도의 높이**를 상상하면 비슷해요. 그런데 이 전압값도 나라마다 다르고, 심지어 옛날 우리나라와 지금 우리나라도 달라요.
+
+옛날 미국의 에디슨은 백열전구를 안전하게 켤 수 있는 정도의 전압으로 **110V**를 정했어요. 그런데 전압이 낮으면 전선에서 에너지 손실이 더 많이 생기는 단점이 있어요. 그래서 훗날 여러 나라가 손실을 줄이려고 전압을 **220V**(또는 230V)로 올렸어요. 같은 전선으로 전기를 보낼 때, 전압을 2배로 올리면 손실은 오히려 훨씬 줄어들거든요.
+
+사실 우리나라도 원래는 일제강점기 때부터 써오던 110V(100V)를 쓰고 있었어요. 그런데 1973년부터 2005년까지 무려 32년에 걸쳐, 전국의 발전소·전봇대·가정용 콘센트와 가전제품까지 전부 **220V**로 바꾸는 어마어마한 "승압 사업"을 벌였어요. 손실을 줄이는 것뿐 아니라, 국내 전자제품 산업을 키우려는 목적도 있었대요. 지금 우리 집 콘센트가 220V인 건 이 오랜 사업 덕분이에요.
+
+그럼 **380V**는 뭘까요? 이건 가정이 아니라 공장처럼 아주 큰 기계를 돌려야 하는 곳에서 써요. 발전소는 전선 3개를 한 세트로 묶어서 전기를 보내는 "삼상 전기" 방식을 쓰는데, 이 전선 3개 사이의 전압 차이를 재면 220V가 아니라 약 **380V**가 나와요(정확히는 220V의 약 1.73배). 전압이 더 세면 같은 양의 전기를 보낼 때 전선에 흐르는 전류가 줄어서, 두껍고 비싼 전선을 덜 써도 되고 모터도 더 힘차게 돌릴 수 있어요. 그래서 공장의 큰 기계나 엘리베이터 같은 곳은 380V 삼상 전기를, 우리 집처럼 작은 가전제품은 220V 전기를 쓰는 거예요.
+
+## 그런데 220V의 진짜 최고점은 311V라고요?
+
+여기서 정말 재미있는 반전이 하나 있어요. 우리가 "220V"라고 부르는 그 전압은 사실 사인파의 **최고점(피크) 값이 아니에요.** 사인파는 0V에서 시작해서 위로 올라갔다가 다시 0을 지나 아래로 내려가는데, 실제로 잰 최고점은 220V가 아니라 약 **311V**예요! 그런데 왜 우리는 이걸 "220V"라고 부를까요?
+
+이유는, 전기가 실제로 전구를 밝히거나 히터를 데우는 "일의 양(전력)"을 기준으로 숫자를 정했기 때문이에요. 전압을 그냥 평균 내면 플러스로 올라간 만큼 마이너스로 내려가서 상쇄돼버려 **0**이 나와요. 하지만 실제로 열이 나는 정도(전력)는 전압의 부호(+/−)와 상관없이, **전압을 제곱한 값**에 비례해요. 그래서 다음과 같은 순서로 계산해요.
+
+1. 전압을 **제곱**한다 → 마이너스였던 값도 전부 플러스가 돼요
+2. 그 제곱값들의 **평균**을 낸다 → 사인파를 제곱해서 평균 내면 정확히 "최고점²의 절반"이 나온다는 게 수학적으로 알려져 있어요
+3. 그 평균에 다시 **제곱근(√)**을 씌운다 → 원래 전압 단위로 되돌아와요
+
+![최고점 311V가 제곱→평균→제곱근을 거쳐 실효값 220V가 되는 과정](/mathisto/assets/episodes/07-pi/rms_voltage_explanation.png)
+
+이 "제곱(Square)하고 → 평균(Mean) 내고 → 제곱근(Root)을 씌우는" 과정을 그대로 이름으로 붙인 게 바로 **실효값(RMS, Root Mean Square)**이에요. 최고점이 311V일 때, 311을 제곱해서 2로 나누면 약 48,360이 나오고, 이 숫자의 제곱근을 구하면 정확히 약 220이 나와요. 거꾸로 말하면 **최고점(311V)에 1/√2(약 0.707)를 곱하면 실효값(220V)**이 되고, **실효값(220V)에 √2(약 1.414)를 곱하면 최고점(311V)**이 되는 거예요.
+
+즉 "220V"는 "이 요동치는 교류가, 220V짜리 건전지(직류)와 똑같은 세기로 전구를 밝히거나 히터를 데운다"는 뜻으로 정한 값이에요. 최고점(311V)을 그대로 쓰면 실제 전기가 하는 일의 크기와 헷갈리기 때문에, 일부러 이 "실효값"을 표준으로 삼은 거랍니다. 예전에 쓰던 110V도 마찬가지로 실효값이고, 실제 최고점은 약 155V(110×√2)였어요.
+
 ---
 
 ## 오늘의 정리
@@ -94,9 +120,11 @@ GPS는 지구 주위를 도는 위성들의 위치를 계산해서 내 위치를
 - 일상에서는 바퀴가 한 바퀴 구를 때 이동하는 거리(둘레)를 계산하는 데 원주율이 쓰여요.
 - 원과 다각형에서 나온 삼각함수(sin·cos)는 오늘날 **GPS 위성 위치 계산**과 **발전소의 교류(AC) 전기 생산**(회전자가 일정한 속도로 돌면서 사인파 모양의 전압을 만듦)에 실제로, 지금도 쓰이는 확립된 기술이에요.
 - 발전기가 1초에 도는 횟수가 곧 전기의 주파수예요. 우리나라·미국은 60Hz, 유럽 등은 50Hz를 쓰는데, 이건 원리 차이가 아니라 1891년 웨스팅하우스(60Hz)와 AEG(50Hz)가 각자 다른 표준을 정한 역사적 선택이 지금까지 이어진 거예요.
+- 전압(V)은 전기가 얼마나 세게 밀어주는지를 나타내요. 우리나라는 손실을 줄이고 산업을 키우려고 1973~2005년에 걸쳐 110V에서 220V로 전국을 바꾸는 "승압 사업"을 벌였고, 공장의 큰 기계는 전선 3개를 쓰는 삼상 전기(약 380V)를 따로 써요.
+- "220V"는 사실 사인파의 최고점이 아니라 **실효값**이에요. 진짜 최고점은 약 311V인데, 전력이 전압의 제곱에 비례하기 때문에 전압을 제곱해서 평균 낸 뒤 다시 제곱근을 씌운 값(311V ÷ √2 ≈ 220V)을 표준으로 쓰는 거예요.
 
 다음에 자전거를 타거나 GPS로 길을 찾을 때, "어? 여기 원주율이 숨어있겠구나!" 하고 한번 떠올려보세요!
 
 ---
 
-*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117), [Electric Generators — Lumen Learning Physics](https://courses.lumenlearning.com/suny-physics/chapter/23-5-electric-generators/), [10.5: AC Generator — Physics LibreTexts](https://phys.libretexts.org/Bookshelves/Electricity_and_Magnetism/Electricity_and_Magnetism_(Tatum)/10:_Electromagnetic_Induction/10.05:_AC_Generator), [Why Europe Uses 50Hz vs US 60Hz Power Frequency History](https://industrialmonitordirect.com/blogs/knowledgebase/why-europe-uses-50hz-and-us-uses-60hz-power-frequency), [Why Do We Use 50 Hz or 60 Hz Frequency for Power Systems? — Electrical4U](https://www.electrical4u.com/why-supply-frequency-is-50-hz-or-60-hz/)*
+*참고 자료: [Archimedes' Approximation of Pi — FGCU](https://itech.fgcu.edu/faculty/clindsey/mhf4404/archimedes/archimedes.html), [Archimedes and his Pi — Math! Science! History!](https://mathsciencehistory.com/archimedes-and-his-pi/), [Pi — Wikipedia](https://en.wikipedia.org/wiki/Pi), [Positions of GPS Satellites in 3D — Esri](https://www.esri.com/en-us/software-engineering/blog/articles/positions-of-gps-satellites-in-3d), [Method for the efficient determination of GPS satellite orbital position — USPTO](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6016117), [Electric Generators — Lumen Learning Physics](https://courses.lumenlearning.com/suny-physics/chapter/23-5-electric-generators/), [10.5: AC Generator — Physics LibreTexts](https://phys.libretexts.org/Bookshelves/Electricity_and_Magnetism/Electricity_and_Magnetism_(Tatum)/10:_Electromagnetic_Induction/10.05:_AC_Generator), [Why Europe Uses 50Hz vs US 60Hz Power Frequency History](https://industrialmonitordirect.com/blogs/knowledgebase/why-europe-uses-50hz-and-us-uses-60hz-power-frequency), [Why Do We Use 50 Hz or 60 Hz Frequency for Power Systems? — Electrical4U](https://www.electrical4u.com/why-supply-frequency-is-50-hz-or-60-hz/), [How the U.S. Came to Adapt 120V While Others are Using 230V — Electronics360](https://electronics360.globalspec.com/article/10511/how-the-u-s-came-to-adapt-120v-while-others-are-using-230v), [Technical Standard in Transition: The Distribution Voltage Conversion Project in South Korea, 1967–2005 — 한국과학사학회지](https://khss.or.kr/index.php?category=5424&document_srl=5584&mid=kjhs), [What is three-phase electricity? Why is it 380V? — EMIN.VN](https://emin.vn/en/what-is-three-phase-electricity-why-is-it-380v-and-how-is-it-different-from-single-phase-and-two-phase-electricity-1368/ne.html), [Root mean square — Wikipedia](https://en.wikipedia.org/wiki/Root_mean_square)*
