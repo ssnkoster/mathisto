@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나만의 암호기계 만들기</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #fff8e7 0%, #fef1d6 100%);
+    color: #4a3623;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    color: #b25c1e;
+  }
+  p.sub {
+    text-align: center;
+    margin-top: 0;
+    color: #8a6a45;
+    font-size: 0.95em;
+  }
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(178, 92, 30, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .rotors {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .rotor-box {
+    text-align: center;
+    background: #fff3dd;
+    border: 3px solid #f3ddb0;
+    border-radius: 16px;
+    padding: 14px 18px;
+    min-width: 140px;
+  }
+  .rotor-box .name {
+    font-weight: bold;
+    color: #b25c1e;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+  }
+  .rotor-letter {
+    font-size: 2.4em;
+    font-weight: bold;
+    color: #d9731a;
+    background: #fffef9;
+    border-radius: 12px;
+    border: 2px solid #f0c98a;
+    width: 70px;
+    margin: 0 auto 10px;
+    line-height: 1.3;
+  }
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: #f3ddb0;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #f2994a;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(178,92,30,0.4);
+    cursor: pointer;
+  }
+  .io-area {
+    margin-top: 22px;
+  }
+  label.big {
+    display: block;
+    font-weight: bold;
+    color: #b25c1e;
+    margin-bottom: 6px;
+    font-size: 1.02em;
+  }
+  textarea {
+    width: 100%;
+    font-size: 1.3em;
+    padding: 14px;
+    border-radius: 14px;
+    border: 3px solid #f3ddb0;
+    background: #fffef9;
+    color: #4a3623;
+    resize: none;
+    font-family: inherit;
+    letter-spacing: 2px;
+  }
+  #output {
+    background: #fff3dd;
+    color: #d9731a;
+    font-weight: bold;
+  }
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  button {
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 12px 22px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background: #f2994a;
+    box-shadow: 0 4px 10px rgba(178,92,30,0.25);
+    transition: transform 0.1s;
+  }
+  button:active { transform: scale(0.96); }
+  button.secondary {
+    background: #7ac0a6;
+  }
+  button.ghost {
+    background: #fff3dd;
+    color: #b25c1e;
+    border: 2px solid #f3ddb0;
+    box-shadow: none;
+  }
+  .hint {
+    text-align: center;
+    color: #8a6a45;
+    font-size: 0.9em;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .lamp-strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 14px;
+    min-height: 30px;
+  }
+  .lamp {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #f3ddb0;
+    color: #b25c1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+  .lamp.lit {
+    background: #f2994a;
+    color: #fff;
+    box-shadow: 0 0 10px #f2994a;
+  }
+  .badge {
+    display: inline-block;
+    background: #fce9d2;
+    color: #b25c1e;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔐 나만의 암호기계 만들기</h1>
+  <p class="sub">에니그마처럼 회전판(로터) 3개로 글자를 뒤죽박죽 바꿔보세요!</p>
+
+  <div class="card">
+    <div class="rotors">
+      <div class="rotor-box">
+        <div class="name">로터 1</div>
+        <div class="rotor-letter" id="r1letter">A</div>
+        <input type="range" id="r1" min="0" max="25" value="0">
+      </div>
+      <div class="rotor-box">
+        <div class="name">로터 2</div>
+        <div class="rotor-letter" id="r2letter">A</div>
+        <input type="range" id="r2" min="0" max="25" value="0">
+      </div>
+      <div class="rotor-box">
+        <div class="name">로터 3</div>
+        <div class="rotor-letter" id="r3letter">A</div>
+        <input type="range" id="r3" min="0" max="25" value="0">
+      </div>
+    </div>
+    <p class="hint">슬라이더를 움직이면 로터가 돌아가요. 로터 위치를 바꾸면 같은 글자도 완전히 다른 글자로 암호화돼요!</p>
+
+    <div class="io-area">
+      <label class="big">✏️ 원래 글자 (영어 알파벳만, 자동 대문자 변환)</label>
+      <textarea id="input" rows="2" placeholder="예: HELLO">HELLO</textarea>
+
+      <label class="big" style="margin-top:16px;">🔒 암호로 변한 글자<span class="badge" id="countBadge">5글자</span></label>
+      <textarea id="output" rows="2" readonly></textarea>
+      <div class="lamp-strip" id="lamps"></div>
+    </div>
+
+    <div class="btn-row">
+      <button onclick="randomizeRotors()">🎲 로터 무작위로 섞기</button>
+      <button class="secondary" onclick="resetRotors()">🔄 로터 처음(A A A)으로</button>
+      <button class="ghost" onclick="copySettings()">📋 지금 설정 외우기</button>
+    </div>
+    <p class="hint" id="settingsSaved"></p>
+    <p class="hint">💡 친구에게 같은 로터 설정을 알려주고, 암호문을 보내보세요! 똑같은 설정으로 다시 돌리면(회전판을 처음 위치로 되돌리고 암호문을 넣으면) 원래 글자가 나와요. 그게 바로 옛날 사람들이 편지를 몰래 주고받던 방법이에요.</p>
+  </div>
+
+  <div class="card">
+    <label class="big">🕵️ 가능성 좁혀보기 놀이</label>
+    <p class="hint" style="margin-top:0;">로터가 3개, 각각 26가지 위치가 있으면 전체 조합은 몇 가지일까요? 버튼을 눌러 하나씩 확인해보세요. 진짜 에니그마는 로터·배선판까지 합쳐 <b>약 1590경(159 뒤에 0이 18개!)</b> 가지였어요.</p>
+    <div style="text-align:center; font-size:1.1em; font-weight:bold; color:#d9731a; margin-top:10px;">
+      26 × 26 × 26 = <span id="totalCombos">17576</span>가지
+    </div>
+  </div>
+</div>
+
+<script>
+const ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// 각 로터는 간단한 치환표(회전에 따라 자리가 밀리는 방식)로 구현
+function rotorShift(letterIndex, rotorPos, direction) {
+  // direction: 1 = 정방향(암호화), -1 = 역방향(복호화)
+  return (letterIndex + direction * rotorPos + 260) % 26;
+}
+
+function getRotorPositions() {
+  return [
+    parseInt(document.getElementById('r1').value),
+    parseInt(document.getElementById('r2').value),
+    parseInt(document.getElementById('r3').value)
+  ];
+}
+
+function updateRotorLetters() {
+  const pos = getRotorPositions();
+  document.getElementById('r1letter').textContent = ALPHA[pos[0]];
+  document.getElementById('r2letter').textContent = ALPHA[pos[1]];
+  document.getElementById('r3letter').textContent = ALPHA[pos[2]];
+}
+
+function encryptChar(ch, pos, charIndexInMessage) {
+  let idx = ALPHA.indexOf(ch);
+  if (idx === -1) return ch; // 알파벳 아니면 그대로
+
+  // 진짜 에니그마처럼: 로터를 통과 → 반사판에서 뒤집기 → 로터를 거꾸로 통과
+  // 이렇게 만들면 같은 설정으로 한 번 더 돌리면 원래 글자로 되돌아와요 (자기 자신의 역함수)
+  const step = charIndexInMessage % 26;
+  const s1 = (pos[0] + step) % 26;
+  const s2 = pos[1];
+  const s3 = pos[2];
+
+  idx = rotorShift(idx, s1, 1);
+  idx = rotorShift(idx, s2, 1);
+  idx = rotorShift(idx, s3, 1);
+  idx = 25 - idx;              // 반사판 (자기 자신의 역함수)
+  idx = rotorShift(idx, s3, -1);
+  idx = rotorShift(idx, s2, -1);
+  idx = rotorShift(idx, s1, -1);
+
+  return ALPHA[idx];
+}
+
+let litTimeout = null;
+function showLamp(letters) {
+  const strip = document.getElementById('lamps');
+  strip.innerHTML = '';
+  for (const ch of letters) {
+    const div = document.createElement('div');
+    div.className = 'lamp' + (ch.match(/[A-Z]/) ? ' lit' : '');
+    div.textContent = ch.match(/[A-Z]/) ? ch : '·';
+    strip.appendChild(div);
+  }
+}
+
+function process() {
+  const raw = document.getElementById('input').value.toUpperCase();
+  document.getElementById('input').value = raw;
+  const pos = getRotorPositions();
+  let result = '';
+  let letterCount = 0;
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i];
+    if (ch.match(/[A-Z]/)) {
+      result += encryptChar(ch, pos, letterCount);
+      letterCount++;
+    } else {
+      result += ch;
+    }
+  }
+  document.getElementById('output').value = result;
+  document.getElementById('countBadge').textContent = letterCount + '글자';
+  showLamp(result);
+}
+
+function randomizeRotors() {
+  document.getElementById('r1').value = Math.floor(Math.random() * 26);
+  document.getElementById('r2').value = Math.floor(Math.random() * 26);
+  document.getElementById('r3').value = Math.floor(Math.random() * 26);
+  updateRotorLetters();
+  process();
+}
+
+function resetRotors() {
+  document.getElementById('r1').value = 0;
+  document.getElementById('r2').value = 0;
+  document.getElementById('r3').value = 0;
+  updateRotorLetters();
+  process();
+}
+
+function copySettings() {
+  const pos = getRotorPositions().map(p => ALPHA[p]).join(' - ');
+  document.getElementById('settingsSaved').textContent = '📌 지금 설정: ' + pos + ' (이 3글자를 친구에게만 몰래 알려주세요!)';
+}
+
+['r1', 'r2', 'r3'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    updateRotorLetters();
+    process();
+  });
+});
+document.getElementById('input').addEventListener('input', process);
+
+updateRotorLetters();
+process();
+</script>
+</body>
+</html>
