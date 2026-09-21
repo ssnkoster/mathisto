@@ -13,6 +13,8 @@ thumbnail: /assets/episodes/08-enigma/enigma_scale.png
 
 영국 돈 50파운드 지폐를 한 장 들여다보면, 웃고 있는 한 남자와 함께 이상한 톱니바퀴 그림, 그리고 0과 1로 된 숫자들이 빼곡히 그려져 있어요. 이 사람이 바로 **앨런 튜링**이에요. 제2차 세계대전 때 절대 풀 수 없다고 여겨졌던 암호를 풀어낸 수학자예요.
 
+*(실제 지폐 사진은 [Bank of England 공식 발표](https://www.bankofengland.co.uk/news/2019/july/50-pound-banknote-character-announcement)와 [Science Museum Group 소장 이미지](https://collection.sciencemuseumgroup.org.uk/objects/co8809078/50-banknote-featuring-alan-turing)에서 볼 수 있어요.)*
+
 그 암호의 이름은 **에니그마**. 독일군이 작전 명령을 몰래 주고받을 때 쓰던 암호 기계였어요. 그런데 이 암호를 만드는 원리도, 튜링이 그걸 풀어낸 방법도, 사실 알고 보면 우리가 하는 "스무고개" 게임과 크게 다르지 않아요. 오늘은 그 비밀을 함께 풀어볼게요!
 
 ---
