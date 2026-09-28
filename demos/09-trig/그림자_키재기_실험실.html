@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그림자 키재기 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #fff8e7 0%, #fef1d6 100%);
+    color: #4a3623;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    color: #b25c1e;
+  }
+  p.sub {
+    text-align: center;
+    margin-top: 0;
+    color: #8a6a45;
+    font-size: 0.95em;
+  }
+  .card {
+    background: #fffdf8;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(178, 92, 30, 0.12);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background: #fffef9;
+    border-radius: 16px;
+    border: 3px solid #f3ddb0;
+    max-width: 100%;
+    touch-action: none;
+  }
+  .cap {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: #8a6a45;
+    font-weight: bold;
+  }
+  .controls { margin-top: 22px; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .row label {
+    min-width: 160px;
+    font-weight: bold;
+    font-size: 0.92em;
+    color: #b25c1e;
+  }
+  input[type="range"] {
+    flex: 1;
+    min-width: 140px;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 6px;
+    background: #f3ddb0;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #ff8c42;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #ff8c42;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
+  }
+  .val-badge {
+    min-width: 66px;
+    text-align: center;
+    background: #ff8c42;
+    color: #fff;
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-weight: bold;
+    font-size: 0.95em;
+  }
+  .buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  button {
+    background: #ff8c42;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 0.92em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.35);
+    transition: transform 0.1s;
+  }
+  button:active { transform: scale(0.96); }
+  button.secondary {
+    background: #fff;
+    color: #b25c1e;
+    border: 2px solid #f3ddb0;
+    box-shadow: none;
+  }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 18px;
+  }
+  .stat {
+    background: #fff3e0;
+    border-radius: 14px;
+    padding: 12px 18px;
+    text-align: center;
+    min-width: 140px;
+    border: 2px solid #f3ddb0;
+  }
+  .stat .num {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #d9581f;
+  }
+  .stat .lbl {
+    font-size: 0.8em;
+    color: #8a6a45;
+    margin-top: 2px;
+  }
+  .result-line {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 1.1em;
+    color: #4a3623;
+    background: #eaf6ec;
+    border-radius: 14px;
+    padding: 14px;
+    border: 2px solid #cdeacf;
+  }
+  .result-line b { color: #2e8b45; font-size: 1.2em; }
+  .hint {
+    text-align: center;
+    color: #8a6a45;
+    font-size: 0.85em;
+    margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌞 그림자 키재기 실험실</h1>
+  <p class="sub">탈레스처럼, 막대 하나의 그림자로 저 멀리 큰 물건의 키를 재볼까요?</p>
+
+  <div class="card">
+    <canvas id="sceneCanvas" width="720" height="360"></canvas>
+    <div class="cap">막대(내 키 기준)와 재고 싶은 물건, 둘 다의 그림자를 동시에 볼 수 있어요</div>
+
+    <div class="controls">
+      <div class="row">
+        <label for="angleSlider">☀️ 태양의 높이 (각도)</label>
+        <input type="range" id="angleSlider" min="10" max="80" step="1" value="35">
+        <span class="val-badge" id="angleVal">35°</span>
+      </div>
+      <div class="row">
+        <label for="stickSlider">📏 막대(기준 물건) 키</label>
+        <input type="range" id="stickSlider" min="0.5" max="3" step="0.1" value="1.5">
+        <span class="val-badge" id="stickVal">1.5m</span>
+      </div>
+      <div class="row">
+        <label for="shadowSlider">🌳 재고 싶은 물건의 그림자</label>
+        <input type="range" id="shadowSlider" min="2" max="40" step="0.5" value="14">
+        <span class="val-badge" id="shadowVal">14m</span>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="secondary" data-preset="tree">🌳 나무 그림자(14m)로 맞추기</button>
+      <button class="secondary" data-preset="pyramid">🔺 피라미드 그림자(230m)로 맞추기</button>
+      <button class="secondary" data-preset="building">🏢 우리집 그림자(6m)로 맞추기</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num" id="ratioNum">0.70</div>
+        <div class="lbl">막대 키 ÷ 막대 그림자<br>(=tan θ, 비율)</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="targetHeightNum">9.8m</div>
+        <div class="lbl">계산된 물건의 높이</div>
+      </div>
+    </div>
+
+    <div class="result-line" id="resultLine">
+      막대 <b>1.5m</b> ÷ 그림자 <b>2.14m</b> = 물건 높이 <b>14m</b> ÷ 물건 그림자 <b>?</b>
+    </div>
+
+    <div class="hint">태양이 낮을수록(각도가 작을수록) 그림자가 길어져요. 각도를 바꿔가며 물건의 키가 어떻게 달라지는지 살펴보세요!</div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('sceneCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const groundY = H - 50;
+
+const angleSlider = document.getElementById('angleSlider');
+const stickSlider = document.getElementById('stickSlider');
+const shadowSlider = document.getElementById('shadowSlider');
+const angleVal = document.getElementById('angleVal');
+const stickVal = document.getElementById('stickVal');
+const shadowVal = document.getElementById('shadowVal');
+const ratioNum = document.getElementById('ratioNum');
+const targetHeightNum = document.getElementById('targetHeightNum');
+const resultLine = document.getElementById('resultLine');
+
+const presets = {
+  tree: 14,
+  pyramid: 230,
+  building: 6
+};
+
+document.querySelectorAll('button[data-preset]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    shadowSlider.value = presets[btn.dataset.preset];
+    draw();
+  });
+});
+
+function draw() {
+  const angleDeg = parseFloat(angleSlider.value);
+  const stickH = parseFloat(stickSlider.value);
+  const targetShadow = parseFloat(shadowSlider.value);
+  const angleRad = angleDeg * Math.PI / 180;
+  const tanA = Math.tan(angleRad);
+  const stickShadow = stickH / tanA;
+  const targetHeight = targetShadow * tanA;
+
+  angleVal.textContent = angleDeg + '°';
+  stickVal.textContent = stickH.toFixed(1) + 'm';
+  shadowVal.textContent = targetShadow.toFixed(1) + 'm';
+  ratioNum.textContent = tanA.toFixed(2);
+  targetHeightNum.textContent = targetHeight.toFixed(1) + 'm';
+  resultLine.innerHTML = `막대 <b>${stickH.toFixed(1)}m</b> ÷ 그림자 <b>${stickShadow.toFixed(2)}m</b> = 물건 높이 <b>${targetHeight.toFixed(1)}m</b> ÷ 물건 그림자 <b>${targetShadow.toFixed(1)}m</b>`;
+
+  // ---- draw scene ----
+  ctx.clearRect(0, 0, W, H);
+
+  // sky gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, groundY);
+  sky.addColorStop(0, '#fff6e0');
+  sky.addColorStop(1, '#fff0d0');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, groundY);
+
+  // sun rays (parallel diagonal lines)
+  ctx.strokeStyle = 'rgba(244, 197, 106, 0.7)';
+  ctx.lineWidth = 2;
+  const rayDx = 40 * Math.cos(angleRad);
+  const rayDy = 40 * Math.sin(angleRad);
+  for (let x = -60; x < W + 60; x += 90) {
+    ctx.beginPath();
+    ctx.moveTo(x, 20);
+    ctx.lineTo(x - rayDx, 20 + rayDy);
+    ctx.stroke();
+  }
+
+  // ground
+  ctx.strokeStyle = '#8a7a5c';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(10, groundY);
+  ctx.lineTo(W - 10, groundY);
+  ctx.stroke();
+
+  // scale: fit whichever shadow is longer into canvas width
+  const pxPerM = Math.min(28, (W - 120) / (stickShadow + targetShadow + 2));
+
+  // ---- stick (left side) ----
+  const stickX = 60;
+  const stickShadowPx = stickShadow * pxPerM;
+  const stickHPx = stickH * pxPerM * 3; // exaggerate stick height visually x3 so it's visible next to tall target
+  ctx.strokeStyle = '#6b4a2f';
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(stickX, groundY);
+  ctx.lineTo(stickX, groundY - stickHPx);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#c98a4b';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(stickX, groundY);
+  ctx.lineTo(stickX + stickShadowPx, groundY);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#ff8c42';
+  ctx.setLineDash([5, 4]);
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(stickX, groundY - stickHPx);
+  ctx.lineTo(stickX + stickShadowPx, groundY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#6b4a2f';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('막대 ' + stickH.toFixed(1) + 'm', stickX, groundY - stickHPx - 10);
+  ctx.fillStyle = '#8a5a20';
+  ctx.font = '12px sans-serif';
+  ctx.fillText(stickShadow.toFixed(2) + 'm', stickX + stickShadowPx / 2, groundY + 18);
+
+  // ---- target object (right side, drawn as a tree/triangle silhouette) ----
+  const targetX0 = stickX + stickShadowPx + 60;
+  const targetShadowPx = targetShadow * pxPerM;
+  const targetHPx = Math.min(targetHeight * pxPerM, groundY - 40);
+  const apexX = targetX0 + Math.min(targetShadowPx * 0.15, 40);
+
+  ctx.fillStyle = '#bfe3c9';
+  ctx.strokeStyle = '#2f6b46';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(targetX0 - 22, groundY);
+  ctx.lineTo(targetX0 + 22, groundY);
+  ctx.lineTo(apexX, groundY - targetHPx);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = '#c98a4b';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(apexX, groundY);
+  ctx.lineTo(apexX + targetShadowPx, groundY);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#ff8c42';
+  ctx.setLineDash([5, 4]);
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(apexX, groundY - targetHPx);
+  ctx.lineTo(apexX + targetShadowPx, groundY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#1f4d31';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.fillText('높이 ' + targetHeight.toFixed(1) + 'm', apexX + 10, Math.max(24, groundY - targetHPx - 8));
+  ctx.fillStyle = '#8a5a20';
+  ctx.font = '12px sans-serif';
+  ctx.fillText(targetShadow.toFixed(1) + 'm', apexX + targetShadowPx / 2, groundY + 18);
+}
+
+[angleSlider, stickSlider, shadowSlider].forEach(el => el.addEventListener('input', draw));
+draw();
+</script>
+</body>
+</html>
