@@ -286,7 +286,7 @@ function draw() {
   for (let x = -60; x < W + 60; x += 90) {
     ctx.beginPath();
     ctx.moveTo(x, 20);
-    ctx.lineTo(x - rayDx, 20 + rayDy);
+    ctx.lineTo(x + rayDx, 20 + rayDy);
     ctx.stroke();
   }
 
