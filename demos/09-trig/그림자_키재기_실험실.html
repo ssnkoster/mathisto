@@ -304,7 +304,7 @@ function draw() {
   // ---- stick (left side) ----
   const stickX = 60;
   const stickShadowPx = stickShadow * pxPerM;
-  const stickHPx = stickH * pxPerM * 3; // exaggerate stick height visually x3 so it's visible next to tall target
+  const stickHPx = stickH * pxPerM; // 막대와 물건이 정확히 같은 태양 각도(비율)를 쓰도록 실제 비율 그대로 그림
   ctx.strokeStyle = '#6b4a2f';
   ctx.lineWidth = 6;
   ctx.lineCap = 'round';
@@ -341,7 +341,7 @@ function draw() {
   const targetX0 = stickX + stickShadowPx + 60;
   const targetShadowPx = targetShadow * pxPerM;
   const targetHPx = Math.min(targetHeight * pxPerM, groundY - 40);
-  const apexX = targetX0 + Math.min(targetShadowPx * 0.15, 40);
+  const apexX = targetX0; // 물건은 똑바로 서 있어야 하므로 밑변 중앙 바로 위에 꼭짓점을 둠
 
   ctx.fillStyle = '#bfe3c9';
   ctx.strokeStyle = '#2f6b46';
