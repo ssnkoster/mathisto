@@ -192,16 +192,16 @@
         <span class="val-badge" id="stickVal">1.5m</span>
       </div>
       <div class="row">
-        <label for="shadowSlider">🌳 재고 싶은 물건의 그림자</label>
-        <input type="range" id="shadowSlider" min="2" max="40" step="0.5" value="14">
-        <span class="val-badge" id="shadowVal">14m</span>
+        <label for="heightSlider">🌳 재고 싶은 물건의 진짜 높이</label>
+        <input type="range" id="heightSlider" min="2" max="200" step="1" value="100">
+        <span class="val-badge" id="heightVal">100m</span>
       </div>
     </div>
 
     <div class="buttons">
-      <button class="secondary" data-preset="tree">🌳 나무 그림자(14m)로 맞추기</button>
-      <button class="secondary" data-preset="pyramid">🔺 피라미드 그림자(230m)로 맞추기</button>
-      <button class="secondary" data-preset="building">🏢 우리집 그림자(6m)로 맞추기</button>
+      <button class="secondary" data-preset="tree">🌳 나무 높이(10m)로 맞추기</button>
+      <button class="secondary" data-preset="pyramid">🔺 피라미드 높이(147m)로 맞추기</button>
+      <button class="secondary" data-preset="building">🏢 우리집 높이(6m)로 맞추기</button>
     </div>
 
     <div class="stats">
@@ -210,16 +210,16 @@
         <div class="lbl">막대 키 ÷ 막대 그림자<br>(=tan θ, 비율)</div>
       </div>
       <div class="stat">
-        <div class="num" id="targetHeightNum">9.8m</div>
-        <div class="lbl">계산된 물건의 높이</div>
+        <div class="num" id="targetShadowNum">142.8m</div>
+        <div class="lbl">계산된 물건의 그림자</div>
       </div>
     </div>
 
     <div class="result-line" id="resultLine">
-      막대 <b>1.5m</b> ÷ 그림자 <b>2.14m</b> = 물건 높이 <b>14m</b> ÷ 물건 그림자 <b>?</b>
+      막대 <b>1.5m</b> ÷ 그림자 <b>2.14m</b> = 물건 높이 <b>100m</b> ÷ 물건 그림자 <b>?</b>
     </div>
 
-    <div class="hint">태양이 낮을수록(각도가 작을수록) 그림자가 길어져요. 각도를 바꿔가며 물건의 키가 어떻게 달라지는지 살펴보세요!</div>
+    <div class="hint">태양의 높이(각도)를 바꾸면, 막대와 물건의 그림자가 <b>똑같은 비율</b>로 함께 늘어나거나 줄어들어요. 물건의 키는 그대로인데, 그림자만 달라지는 걸 살펴보세요!</div>
   </div>
 </div>
 
@@ -231,23 +231,23 @@ const groundY = H - 50;
 
 const angleSlider = document.getElementById('angleSlider');
 const stickSlider = document.getElementById('stickSlider');
-const shadowSlider = document.getElementById('shadowSlider');
+const heightSlider = document.getElementById('heightSlider');
 const angleVal = document.getElementById('angleVal');
 const stickVal = document.getElementById('stickVal');
-const shadowVal = document.getElementById('shadowVal');
+const heightVal = document.getElementById('heightVal');
 const ratioNum = document.getElementById('ratioNum');
-const targetHeightNum = document.getElementById('targetHeightNum');
+const targetShadowNum = document.getElementById('targetShadowNum');
 const resultLine = document.getElementById('resultLine');
 
 const presets = {
-  tree: 14,
-  pyramid: 230,
+  tree: 10,
+  pyramid: 147,
   building: 6
 };
 
 document.querySelectorAll('button[data-preset]').forEach(btn => {
   btn.addEventListener('click', () => {
-    shadowSlider.value = presets[btn.dataset.preset];
+    heightSlider.value = presets[btn.dataset.preset];
     draw();
   });
 });
@@ -255,18 +255,19 @@ document.querySelectorAll('button[data-preset]').forEach(btn => {
 function draw() {
   const angleDeg = parseFloat(angleSlider.value);
   const stickH = parseFloat(stickSlider.value);
-  const targetShadow = parseFloat(shadowSlider.value);
+  const targetHeight = parseFloat(heightSlider.value);
   const angleRad = angleDeg * Math.PI / 180;
   const tanA = Math.tan(angleRad);
+  // 막대와 물건 모두 "진짜 키는 고정, 그림자는 태양 각도에 따라 달라짐" — 같은 방식으로 계산해요
   const stickShadow = stickH / tanA;
-  const targetHeight = targetShadow * tanA;
+  const targetShadow = targetHeight / tanA;
 
   angleVal.textContent = angleDeg + '°';
   stickVal.textContent = stickH.toFixed(1) + 'm';
-  shadowVal.textContent = targetShadow.toFixed(1) + 'm';
+  heightVal.textContent = targetHeight.toFixed(0) + 'm';
   ratioNum.textContent = tanA.toFixed(2);
-  targetHeightNum.textContent = targetHeight.toFixed(1) + 'm';
-  resultLine.innerHTML = `막대 <b>${stickH.toFixed(1)}m</b> ÷ 그림자 <b>${stickShadow.toFixed(2)}m</b> = 물건 높이 <b>${targetHeight.toFixed(1)}m</b> ÷ 물건 그림자 <b>${targetShadow.toFixed(1)}m</b>`;
+  targetShadowNum.textContent = targetShadow.toFixed(1) + 'm';
+  resultLine.innerHTML = `막대 <b>${stickH.toFixed(1)}m</b> ÷ 그림자 <b>${stickShadow.toFixed(2)}m</b> = 물건 높이 <b>${targetHeight.toFixed(0)}m</b> ÷ 물건 그림자 <b>${targetShadow.toFixed(1)}m</b>`;
 
   // ---- draw scene ----
   ctx.clearRect(0, 0, W, H);
@@ -298,8 +299,12 @@ function draw() {
   ctx.lineTo(W - 10, groundY);
   ctx.stroke();
 
-  // scale: fit whichever shadow is longer into canvas width
-  const pxPerM = Math.min(28, (W - 120) / (stickShadow + targetShadow + 2));
+  // scale: 가로(그림자 합)와 세로(가장 큰 높이) 둘 다 캔버스 안에 들어오도록 같은 배율(pxPerM)을 정함
+  // (배율을 하나로 통일해야 막대와 물건이 항상 같은 태양 각도로 보여요)
+  const maxHeightPx = groundY - 60;
+  const pxPerMWidth = (W - 120) / (stickShadow + targetShadow + 2);
+  const pxPerMHeight = maxHeightPx / Math.max(targetHeight, stickH, 0.001);
+  const pxPerM = Math.min(28, pxPerMWidth, pxPerMHeight);
 
   // ---- stick (left side) ----
   const stickX = 60;
@@ -340,7 +345,7 @@ function draw() {
   // ---- target object (right side, drawn as a tree/triangle silhouette) ----
   const targetX0 = stickX + stickShadowPx + 60;
   const targetShadowPx = targetShadow * pxPerM;
-  const targetHPx = Math.min(targetHeight * pxPerM, groundY - 40);
+  const targetHPx = targetHeight * pxPerM; // pxPerM이 이미 높이도 맞춰 계산되어 있어서 따로 자르지 않아요
   const apexX = targetX0; // 물건은 똑바로 서 있어야 하므로 밑변 중앙 바로 위에 꼭짓점을 둠
 
   ctx.fillStyle = '#bfe3c9';
@@ -372,13 +377,13 @@ function draw() {
 
   ctx.fillStyle = '#1f4d31';
   ctx.font = 'bold 13px sans-serif';
-  ctx.fillText('높이 ' + targetHeight.toFixed(1) + 'm', apexX + 10, Math.max(24, groundY - targetHPx - 8));
+  ctx.fillText('높이 ' + targetHeight.toFixed(0) + 'm', apexX + 10, Math.max(24, groundY - targetHPx - 8));
   ctx.fillStyle = '#8a5a20';
   ctx.font = '12px sans-serif';
   ctx.fillText(targetShadow.toFixed(1) + 'm', apexX + targetShadowPx / 2, groundY + 18);
 }
 
-[angleSlider, stickSlider, shadowSlider].forEach(el => el.addEventListener('input', draw));
+[angleSlider, stickSlider, heightSlider].forEach(el => el.addEventListener('input', draw));
 draw();
 </script>
 </body>
