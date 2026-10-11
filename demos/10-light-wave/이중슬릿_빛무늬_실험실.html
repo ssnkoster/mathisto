@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이중 슬릿 빛무늬 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; background:linear-gradient(180deg,#fff8e7 0%,#fef1d6 100%); color:#4a3623; padding:24px 16px 48px; }
+  .wrap { max-width:820px; margin:0 auto; }
+  h1 { text-align:center; font-size:1.6em; margin-bottom:4px; color:#b25c1e; }
+  p.sub { text-align:center; margin-top:0; color:#8a6a45; font-size:.95em; }
+  .card { background:#fffdf8; border-radius:18px; box-shadow:0 6px 20px rgba(178,92,30,.12); padding:20px; margin-top:20px; }
+  canvas { display:block; margin:0 auto; border-radius:16px; border:3px solid #f3ddb0; max-width:100%; background:#0b0b0b; }
+  .cap { text-align:center; margin-top:8px; font-size:.85em; color:#8a6a45; font-weight:bold; }
+  .row { display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+  .row label { min-width:170px; font-weight:bold; font-size:.92em; color:#b25c1e; }
+  input[type=range] { flex:1; min-width:140px; -webkit-appearance:none; height:10px; border-radius:6px; background:#f3ddb0; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.25); cursor:pointer; }
+  input[type=range]::-moz-range-thumb { width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; cursor:pointer; }
+  .val-badge { min-width:78px; text-align:center; background:#ff8c42; color:#fff; border-radius:10px; padding:4px 10px; font-weight:bold; font-size:.95em; }
+  .buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  button { background:#ff8c42; color:#fff; border:none; border-radius:12px; padding:12px 18px; font-size:.92em; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(255,140,66,.35); }
+  button:active { transform:scale(.96); }
+  button.secondary { background:#fff; color:#b25c1e; border:2px solid #f3ddb0; box-shadow:none; }
+  .result-line { text-align:center; margin-top:16px; font-size:1.05em; background:#eaf6ec; border-radius:14px; padding:14px; border:2px solid #cdeacf; }
+  .tip { background:#fff3e0; border-radius:14px; padding:12px 16px; margin-top:16px; border:2px solid #f3ddb0; font-size:.92em; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌈 이중 슬릿 빛무늬 실험실</h1>
+  <p class="sub">빛이 파동이라면 두 개의 틈을 지난 뒤 어떤 무늬가 생길까요? 슬라이더를 움직여 보세요!</p>
+
+  <div class="card">
+    <canvas id="screen" width="760" height="180"></canvas>
+    <div class="cap">▲ 스크린에 비친 모습 (밝은 줄 = 파동이 서로 도와준 곳)</div>
+    <canvas id="graph" width="760" height="200" style="background:#fffef9;margin-top:14px"></canvas>
+    <div class="cap">▲ 위치별 밝기 그래프</div>
+  </div>
+
+  <div class="card">
+    <div class="row"><label>🎨 빛깔(파장)</label><input type="range" id="wl" min="400" max="700" value="550"><span class="val-badge" id="wlv"></span></div>
+    <div class="row"><label>↔ 두 틈 사이 거리</label><input type="range" id="gap" min="50" max="300" value="100"><span class="val-badge" id="gapv"></span></div>
+    <div class="row"><label>📏 스크린까지 거리</label><input type="range" id="dist" min="5" max="30" value="10"><span class="val-badge" id="distv"></span></div>
+    <div class="buttons">
+      <button id="red">빨강 💡</button><button id="green" >초록 💡</button><button id="blue">파랑 💡</button>
+      <button id="white" class="secondary">흰 빛 (모든 색)</button>
+      <button id="particle" class="secondary">알갱이라면? 🔵</button>
+    </div>
+    <div class="result-line" id="res"></div>
+    <div class="tip">💡 <b>발견해 보세요!</b> 빨간빛은 줄무늬 간격이 넓고, 파란빛은 좁아요. 두 틈을 멀리 벌리면 줄무늬가 촘촘해지고, 스크린을 멀리 놓으면 줄무늬가 넓게 퍼져요. 흰 빛에서는 가운데만 하얗고 양옆에 무지갯빛 가장자리가 생겨요!</div>
+  </div>
+</div>
+<script>
+const sc=document.getElementById('screen'), gr=document.getElementById('graph');
+const sx=sc.getContext('2d'), gx=gr.getContext('2d');
+let mode='mono'; // mono | white | particle
+const $=id=>document.getElementById(id);
+function wlToRGB(w){ // approx visible spectrum
+  let r=0,g=0,b=0;
+  if(w<440){r=-(w-440)/60;b=1} else if(w<490){g=(w-440)/50;b=1} else if(w<510){g=1;b=-(w-510)/20}
+  else if(w<580){r=(w-510)/70;g=1} else if(w<645){r=1;g=-(w-645)/65} else {r=1}
+  let f=1; if(w<420)f=.3+.7*(w-380)/40; else if(w>700)f=.3+.7*(700-w)/80;
+  return [r*f,g*f,b*f];
+}
+// 슬라이더 값: 파장 nm, 틈 간격 d = gap/100 mm... 화면 폭 = 24 mm 가정
+const W_MM=24;
+function intensity(xmm,wlnm,dmm,Lm){ // Δ phase = π d x /(λ L)
+  const lam=wlnm*1e-9, d=dmm*1e-3, x=xmm*1e-3;
+  return Math.pow(Math.cos(Math.PI*d*x/(lam*Lm)),2);
+}
+function draw(){
+  const wl=+$('wl').value, d=+$('gap').value/1000, L=+$('dist').value/10; // d: 0.05~0.3 mm, L: 0.5~3 m
+  $('wlv').textContent=wl+' nm'; $('gapv').textContent=d.toFixed(2)+' mm'; $('distv').textContent=L.toFixed(1)+' m';
+  const w=sc.width,h=sc.height; const img=sx.createImageData(w,h);
+  gx.clearRect(0,0,gr.width,gr.height); gx.fillStyle='#fffef9'; gx.fillRect(0,0,gr.width,gr.height);
+  const waves = mode==='white'? [450,500,550,600,650] : [wl];
+  const cols=waves.map(wlToRGB);
+  const prof=new Array(w);
+  for(let i=0;i<w;i++){
+    const x=(i/w-.5)*W_MM; let r=0,g=0,b=0;
+    if(mode==='particle'){ const I=Math.exp(-x*x/(2*4*4)); r=g=b=I; r=I; g=I*.83; b=I*.2; }
+    else { waves.forEach((wv,k)=>{ const I=intensity(x,wv,d,L)/waves.length*(mode==='white'?1.8:1); r+=I*cols[k][0]; g+=I*cols[k][1]; b+=I*cols[k][2]; }); }
+    r=Math.min(1,r);g=Math.min(1,g);b=Math.min(1,b);
+    prof[i]=[r,g,b];
+    for(let j=0;j<h;j++){const p=(j*w+i)*4; img.data[p]=r*255;img.data[p+1]=g*255;img.data[p+2]=b*255;img.data[p+3]=255;}
+  }
+  sx.putImageData(img,0,0);
+  // graph
+  gx.strokeStyle='#eee'; gx.lineWidth=1; for(let k=0;k<=4;k++){gx.beginPath();gx.moveTo(0,k*gr.height/4);gx.lineTo(gr.width,k*gr.height/4);gx.stroke();}
+  gx.beginPath(); gx.lineWidth=3; gx.strokeStyle='#d9480f';
+  for(let i=0;i<w;i++){const v=Math.max(prof[i][0],prof[i][1],prof[i][2]); const y=gr.height-8-v*(gr.height-20); i?gx.lineTo(i,y):gx.moveTo(i,y);} gx.stroke();
+  // 줄무늬 간격
+  if(mode==='particle'){ $('res').innerHTML='알갱이(작은 공)라면 두 틈 바로 뒤쪽에 <b>두 덩어리</b>가 생길 거예요. 줄무늬는 생기지 않아요. 하지만 진짜 빛은 줄무늬를 만들었어요! → 빛은 <b>파동</b>의 성질이 있어요.'; }
+  else { const fr=(wl*1e-9*L/(d*1e-3))*1000; $('res').innerHTML= mode==='white'?'흰 빛은 여러 색이 섞여 있어서, 색마다 줄무늬 간격이 달라 <b>무지갯빛 가장자리</b>가 생겨요!' : `밝은 줄과 다음 밝은 줄 사이 간격 ≈ <b>${fr.toFixed(2)} mm</b> <small>(파장 × 거리 ÷ 틈 간격)</small>`; }
+}
+['wl','gap','dist'].forEach(id=>$(id).addEventListener('input',()=>{ if(mode!=='mono')mode='mono'; draw();}));
+function setC(w){mode='mono';$('wl').value=w;draw();}
+$('red').onclick=()=>setC(650); $('green').onclick=()=>setC(532); $('blue').onclick=()=>setC(450);
+$('white').onclick=()=>{mode='white';draw();}; $('particle').onclick=()=>{mode='particle';draw();};
+draw();
+</script>
+</body>
+</html>
