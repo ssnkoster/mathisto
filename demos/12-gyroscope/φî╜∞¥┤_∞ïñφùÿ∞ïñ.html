@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>팽이 실험실 — 세차운동</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; background:linear-gradient(180deg,#fff8e7 0%,#fef1d6 100%); color:#4a3623; padding:24px 16px 48px; }
+  .wrap { max-width:820px; margin:0 auto; }
+  h1 { text-align:center; font-size:1.6em; margin-bottom:4px; color:#b25c1e; }
+  p.sub { text-align:center; margin-top:0; color:#8a6a45; font-size:.95em; }
+  .card { background:#fffdf8; border-radius:18px; box-shadow:0 6px 20px rgba(178,92,30,.12); padding:20px; margin-top:20px; }
+  canvas { display:block; margin:0 auto; border-radius:16px; border:3px solid #f3ddb0; max-width:100%; background:#fffef9; }
+  .row { display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+  .row label { min-width:170px; font-weight:bold; font-size:.92em; color:#b25c1e; }
+  input[type=range] { flex:1; min-width:140px; -webkit-appearance:none; height:10px; border-radius:6px; background:#f3ddb0; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.25); cursor:pointer; }
+  input[type=range]::-moz-range-thumb { width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; cursor:pointer; }
+  .val-badge { min-width:90px; text-align:center; background:#ff8c42; color:#fff; border-radius:10px; padding:4px 10px; font-weight:bold; font-size:.95em; }
+  .buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  button { background:#ff8c42; color:#fff; border:none; border-radius:12px; padding:12px 18px; font-size:.95em; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(255,140,66,.35); }
+  button:active { transform:scale(.96); }
+  .msg { text-align:center; margin-top:14px; font-size:1.05em; background:#eaf6ec; border-radius:14px; padding:14px; border:2px solid #cdeacf; min-height:3.4em; }
+  .tip { background:#fff3e0; border-radius:14px; padding:12px 16px; margin-top:16px; border:2px solid #f3ddb0; font-size:.92em; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌀 팽이 실험실</h1>
+  <p class="sub">팽이를 얼마나 빨리 돌리느냐에 따라 어떻게 될까요? 슬라이더를 움직여 보세요!</p>
+  <div class="card">
+    <canvas id="c" width="560" height="380"></canvas>
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="card">
+    <div class="row"><label>⚡ 팽이 돌리는 속도</label><input type="range" id="spin" min="0" max="100" value="60"><span class="val-badge" id="spinv"></span></div>
+    <div class="row"><label>📐 처음 기울기</label><input type="range" id="tilt" min="5" max="45" value="20"><span class="val-badge" id="tiltv"></span></div>
+    <div class="buttons"><button id="reset">🔄 다시 시작</button><button id="push">👆 옆에서 톡! 건드리기</button></div>
+    <div class="tip">💡 <b>관찰 포인트</b><br>① 빨리 돌릴수록 축이 도는 속도(세차)는 <b>느려지고</b> 안정적이에요.<br>② 속도를 0에 가깝게 하면? 그냥 쓰러져요!<br>③ 느려지는 팽이는 점점 더 크게 비틀거리다가 쓰러져요. (이 데모는 마찰이 작아서 천천히 느려져요.)<br><small>※ 아이들이 이해하기 쉬운 단순화 모델이에요. 실제 팽이는 훨씬 복잡하게 움직여요.</small></div>
+  </div>
+</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const $=id=>document.getElementById(id);
+let spin,tiltDeg,theta,phi,time,fallen,fallT;
+const g=9.8,mgl=1.0; // simplified
+function init(){
+  spin=+$('spin').value/100*60; // rad/s-ish
+  tiltDeg=+$('tilt').value; theta=tiltDeg*Math.PI/180; phi=0; time=0; fallen=false; fallT=0;
+  $('spinv').textContent=$('spin').value+'%'; $('tiltv').textContent=$('tilt').value+'°';
+}
+['spin','tilt'].forEach(i=>$(i).addEventListener('input',init));
+$('reset').onclick=init;
+$('push').onclick=()=>{ if(!fallen) theta=Math.min(theta+0.12,1.4); };
+let curSpin;
+function step(dt){
+  if(fallen){fallT+=dt;return;}
+  spin*=Math.pow(0.985,dt*10); // slow friction
+  // simplified: precession rate = m g l / (I w); fast spin -> slow precession
+  const w=Math.max(spin,0.0001);
+  const prec=Math.min(3.0/ (w*0.35+0.001),40);
+  phi+=prec*dt*0.4;
+  // tilt grows as spin decays (gravity wins when w small)
+  const crit=6; // below this, falls
+  if(w<crit){ theta+= (0.3+ (crit-w)*0.08)*dt; }
+  else theta+= 0.01*dt*(crit/w)*Math.sin(theta)*0.2; // slight wobble drift
+  if(theta>=Math.PI/2-0.05){fallen=true;fallT=0;theta=Math.PI/2-0.05;}
+  curSpin=w;
+}
+let spinAngle=0;
+function draw(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  // table
+  ctx.fillStyle='#f3ddb0';ctx.fillRect(0,300,560,80);
+  const px=190,py=300,len=170; // pivot
+  const t=theta;
+  // side view: axis tilts toward projection of phi
+  const sx=Math.sin(t)*Math.cos(phi), sz=Math.sin(t)*Math.sin(phi), sy=Math.cos(t);
+  const tx=px+len*sx, ty=py-len*sy;
+  // top body
+  ctx.lineWidth=10;ctx.strokeStyle='#b25c1e';ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(tx,ty);ctx.stroke();
+  const mx=px+0.55*len*sx,my=py-0.55*len*sy;
+  // disk
+  spinAngle+=(spin||0)*0.02;
+  ctx.save();ctx.translate(mx,my);ctx.rotate(Math.atan2(sx,sy)*-1);
+  ctx.fillStyle='#ff8c42';ctx.beginPath();ctx.ellipse(0,0,55,13*(1+0.3*Math.abs(Math.sin(spinAngle))),0,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(Math.cos(spinAngle)*45,0);ctx.lineTo(-Math.cos(spinAngle)*45,0);ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle='#e8505b';ctx.beginPath();ctx.arc(tx,ty,9,0,Math.PI*2);ctx.fill();
+  // top view circle
+  const cx=430,cy=140,R=80;
+  ctx.fillStyle='#4a3623';ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+  ctx.fillText('위에서 본 축의 자취',cx,40);
+  ctx.strokeStyle='#f3ddb0';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
+  const r=R*Math.min(1,Math.sin(t)/0.8);
+  ctx.strokeStyle='#ff8c42';ctx.setLineDash([5,5]);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#e8505b';ctx.beginPath();ctx.arc(cx+r*Math.cos(phi),cy+r*Math.sin(phi),9,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#b25c1e';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+  const m=$('msg');
+  if(fallen) m.textContent='😵 쓰러졌어요! 회전이 느려지면 중력이 이겨요. 다시 시작해 보세요.';
+  else if((curSpin||spin)<12) m.textContent='😟 팽이가 느려져서 비틀거려요! 곧 쓰러질 것 같아요…';
+  else m.textContent='😄 빨리 돌아서 안 쓰러져요! 축이 천천히 원을 그리며 돌고 있어요 (세차운동).';
+}
+let last=performance.now();
+function loop(n){const dt=Math.min((n-last)/1000,0.05);last=n;step(dt);draw();requestAnimationFrame(loop);}
+init();requestAnimationFrame(loop);
+</script>
+</body>
+</html>

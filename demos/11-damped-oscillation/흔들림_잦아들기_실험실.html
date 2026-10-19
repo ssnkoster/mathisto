@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>흔들림 잦아들기 실험실</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; background:linear-gradient(180deg,#fff8e7 0%,#fef1d6 100%); color:#4a3623; padding:24px 16px 48px; }
+  .wrap { max-width:820px; margin:0 auto; }
+  h1 { text-align:center; font-size:1.6em; margin-bottom:4px; color:#b25c1e; }
+  p.sub { text-align:center; margin-top:0; color:#8a6a45; font-size:.95em; }
+  .card { background:#fffdf8; border-radius:18px; box-shadow:0 6px 20px rgba(178,92,30,.12); padding:20px; margin-top:20px; }
+  canvas { display:block; margin:0 auto; border-radius:16px; border:3px solid #f3ddb0; max-width:100%; background:#fffef9; }
+  .cap { text-align:center; margin-top:8px; font-size:.85em; color:#8a6a45; font-weight:bold; }
+  .row { display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap; }
+  .row label { min-width:170px; font-weight:bold; font-size:.92em; color:#b25c1e; }
+  input[type=range] { flex:1; min-width:140px; -webkit-appearance:none; height:10px; border-radius:6px; background:#f3ddb0; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.25); cursor:pointer; }
+  input[type=range]::-moz-range-thumb { width:26px; height:26px; border-radius:50%; background:#ff8c42; border:3px solid #fff; cursor:pointer; }
+  .val-badge { min-width:90px; text-align:center; background:#ff8c42; color:#fff; border-radius:10px; padding:4px 10px; font-weight:bold; font-size:.95em; }
+  .buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  button { background:#ff8c42; color:#fff; border:none; border-radius:12px; padding:12px 18px; font-size:.95em; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(255,140,66,.35); }
+  button:active { transform:scale(.96); }
+  button.secondary { background:#fff; color:#b25c1e; border:2px solid #f3ddb0; box-shadow:none; }
+  .result-line { text-align:center; margin-top:16px; font-size:1.05em; background:#eaf6ec; border-radius:14px; padding:14px; border:2px solid #cdeacf; }
+  .tip { background:#fff3e0; border-radius:14px; padding:12px 16px; margin-top:16px; border:2px solid #f3ddb0; font-size:.92em; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 흔들림 잦아들기 실험실</h1>
+  <p class="sub">스프링에 매달린 공을 아래로 당겼다 놓아 보세요! 흔들림을 막아 주는 힘(댐퍼)을 바꾸면 어떻게 될까요?</p>
+
+  <div class="card">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <canvas id="ball" width="220" height="320"></canvas>
+      <canvas id="graph" width="520" height="320"></canvas>
+    </div>
+    <div class="cap">◀ 공을 마우스(손가락)로 끌어당겼다 놓아도 돼요 · ▶ 시간에 따른 공의 위치</div>
+  </div>
+
+  <div class="card">
+    <div class="row"><label>🛡️ 흔들림 막는 힘 (댐퍼)</label><input type="range" id="damp" min="0" max="100" value="15"><span class="val-badge" id="dampv"></span></div>
+    <div class="row"><label>🌀 스프링의 단단함</label><input type="range" id="spring" min="20" max="100" value="50"><span class="val-badge" id="springv"></span></div>
+    <div class="buttons">
+      <button id="pull">⬇️ 공 당겼다 놓기</button>
+      <button class="secondary" id="p1">🏹 화살대처럼 (조금 막음)</button>
+      <button class="secondary" id="p2">🚗 자동차 서스펜션 (알맞게)</button>
+      <button class="secondary" id="p3">🪨 꽉 막힘 (너무 많이)</button>
+    </div>
+    <div class="result-line" id="result"></div>
+    <div class="tip">💡 <b>알아두기</b> — 댐퍼가 0에 가까우면 오래오래 출렁이고, 알맞게 있으면 한두 번만 출렁이고 멈춰요. 너무 세면 출렁이지는 않지만 제자리로 돌아오는 데 오래 걸려요. 자동차 충격흡수장치는 "알맞게 막는" 쪽을 노려요!</div>
+  </div>
+</div>
+<script>
+const bc=document.getElementById('ball'), bx=bc.getContext('2d');
+const gc=document.getElementById('graph'), gx=gc.getContext('2d');
+const dampEl=document.getElementById('damp'), spEl=document.getElementById('spring');
+let y=0.6, v=0, t=0, hist=[], dragging=false;
+const anchorY=30, restY=170, scale=110;
+function params(){ const k=+spEl.value/10; const m=1; const c=+dampEl.value/100*2*Math.sqrt(k*m)*1.5; return {k,m,c}; }
+function labels(){
+  const p=params(), z=p.c/(2*Math.sqrt(p.k*p.m));
+  document.getElementById('dampv').textContent=dampEl.value;
+  document.getElementById('springv').textContent=spEl.value;
+  let msg;
+  if(z<0.02) msg='🌊 막는 힘이 거의 없어서 계속 출렁여요!';
+  else if(z<0.7) msg='🎢 몇 번 출렁이다가 점점 잦아들어요 (덜 막힌 상태).';
+  else if(z<=1.15) msg='✅ 알맞게 막혀서 제자리로 가장 빨리 돌아와요!';
+  else msg='🐢 너무 세게 막혀서 출렁이지는 않지만 천천히 돌아와요.';
+  document.getElementById('result').textContent=msg;
+}
+function pull(){ y=0.6; v=0; t=0; hist=[]; }
+function step(dt){
+  const {k,m,c}=params();
+  const a=(-k*y - c*v)/m; v+=a*dt; y+=v*dt; t+=dt;
+  hist.push([t,y]); if(hist.length>1500) hist.shift();
+}
+function draw(){
+  bx.clearRect(0,0,220,320);
+  const by=restY+y*scale;
+  bx.strokeStyle='#8a6a45'; bx.lineWidth=6; bx.beginPath(); bx.moveTo(40,anchorY); bx.lineTo(180,anchorY); bx.stroke();
+  bx.strokeStyle='#ff8c42'; bx.lineWidth=4; bx.beginPath(); bx.moveTo(110,anchorY);
+  const n=12, h=(by-18-anchorY)/n; for(let i=0;i<n;i++){ bx.lineTo(110+(i%2?-18:18), anchorY+h*(i+0.5)); } bx.lineTo(110,by-18); bx.stroke();
+  bx.strokeStyle='#cdeacf'; bx.lineWidth=2; bx.setLineDash([5,5]); bx.beginPath(); bx.moveTo(20,restY); bx.lineTo(200,restY); bx.stroke(); bx.setLineDash([]);
+  bx.fillStyle='#5cb85c'; bx.font='12px sans-serif'; bx.fillText('제자리',22,restY-6);
+  bx.fillStyle='#ff8c42'; bx.beginPath(); bx.arc(110,by,18,0,7); bx.fill(); bx.strokeStyle='#fff'; bx.lineWidth=3; bx.stroke();
+  // graph
+  gx.clearRect(0,0,520,320); gx.fillStyle='#fffef9'; gx.fillRect(0,0,520,320);
+  gx.strokeStyle='#8a6a45'; gx.lineWidth=1; gx.beginPath(); gx.moveTo(10,160); gx.lineTo(510,160); gx.stroke();
+  gx.fillStyle='#8a6a45'; gx.font='12px sans-serif'; gx.fillText('시간 →',470,176);
+  gx.strokeStyle='#ff8c42'; gx.lineWidth=3; gx.beginPath();
+  const tEnd=hist.length?hist[hist.length-1][0]:0; const span=15; const t0=Math.max(0,tEnd-span);
+  let first=true; for(const [tt,yy] of hist){ if(tt<t0) continue; const X=10+(tt-t0)/span*500, Y=160-yy*130; if(first){gx.moveTo(X,Y);first=false}else gx.lineTo(X,Y); }
+  gx.stroke();
+}
+let last=performance.now();
+function loop(now){ let dt=Math.min(0.03,(now-last)/1000); last=now;
+  if(!dragging){ const sub=5; for(let i=0;i<sub;i++) step(dt/sub*2); }
+  draw(); requestAnimationFrame(loop); }
+function setPreset(d,s){ dampEl.value=d; spEl.value=s; labels(); pull(); }
+document.getElementById('pull').onclick=pull;
+document.getElementById('p1').onclick=()=>setPreset(10,50);
+document.getElementById('p2').onclick=()=>setPreset(62,50);
+document.getElementById('p3').onclick=()=>setPreset(100,50);
+dampEl.oninput=spEl.oninput=labels;
+function pos(e){ const r=bc.getBoundingClientRect(); const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return (cy*320/r.height-restY)/scale; }
+function down(e){ dragging=true; y=Math.max(-0.8,Math.min(0.9,pos(e))); v=0; e.preventDefault(); }
+function move(e){ if(dragging){ y=Math.max(-0.8,Math.min(0.9,pos(e))); v=0; e.preventDefault(); } }
+function up(){ if(dragging){ dragging=false; t=0; hist=[]; } }
+bc.addEventListener('mousedown',down); window.addEventListener('mousemove',move); window.addEventListener('mouseup',up);
+bc.addEventListener('touchstart',down,{passive:false}); window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up);
+labels(); pull(); requestAnimationFrame(loop);
+</script>
+</body>
+</html>
