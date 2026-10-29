@@ -68,7 +68,7 @@ thumbnail: /assets/episodes/12-gyroscope/precession_top.png
 
 팽이를 돌리는 속도와 처음 기울기를 바꿔 보세요. 빨리 돌리면 어떻게 될까요? 느리게 돌리면요? 옆에서 톡 건드리면 어떻게 반응할까요?
 
-**👉 [팽이 실험실 열어보기](/mathisto/demos/12-gyroscope/팽이_실험실.html)** — 클릭하면 새 창에서 바로 실험해볼 수 있어요!
+**👉 [팽이 실험실 열어보기](/mathisto/demos/12-gyroscope/top_lab.html)** — 클릭하면 새 창에서 바로 실험해볼 수 있어요!
 {: .demo-link}
 
 ---
