@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>코리올리와 센서 실험실</title>
+<style>
+body{font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#FFF8EC;color:#4A3B2A;margin:0;padding:16px;text-align:center}
+h1{font-size:24px;margin:6px 0}h2{font-size:18px;margin:4px 0}
+.card{background:#fff;border:3px solid #F28C28;border-radius:20px;max-width:620px;margin:16px auto;padding:14px}
+canvas{background:#FFFDF7;border-radius:14px;max-width:100%}
+button{background:#F28C28;color:#fff;border:0;border-radius:14px;font-size:18px;font-weight:bold;padding:10px 18px;margin:4px;cursor:pointer}
+button.alt{background:#3B82C4}
+input[type=range]{width:70%;accent-color:#F28C28}
+p{font-size:16px;line-height:1.5;margin:6px}
+</style></head><body>
+<h1>🎠 코리올리와 센서 실험실</h1>
+<div class="card">
+<h2>실험 1. 회전목마에서 공 굴리기</h2>
+<p>회전목마를 돌리고 공을 굴려 보세요. 보는 위치를 바꿔 볼 수 있어요!</p>
+<canvas id="c1" width="560" height="360"></canvas>
+<p>회전 빠르기: <b id="w1v">1.2</b><br><input type="range" id="w1" min="0" max="3" step="0.1" value="1.2"></p>
+<button id="throw">⚽ 공 굴리기</button>
+<button id="view" class="alt">👀 보는 곳: 밖에서</button>
+</div>
+<div class="card">
+<h2>실험 2. 반도체 자이로 센서 속 떨리는 덩어리</h2>
+<p>덩어리는 계속 좌우로 떨어요. 센서를 돌리면 코리올리 힘 때문에 위아래로도 흔들려요.</p>
+<canvas id="c2" width="560" height="300"></canvas>
+<p>센서가 도는 빠르기: <b id="w2v">0</b><br><input type="range" id="w2" min="-3" max="3" step="0.1" value="0"></p>
+<p id="msg2">센서가 가만히 있어요. 덩어리는 좌우로만 떨어요.</p>
+</div>
+<script>
+// 실험 1
+const c1=document.getElementById('c1'),g1=c1.getContext('2d');
+let outside=true,ball=null,rot=0,last=performance.now();
+const R=160,cx=280,cy=180;
+document.getElementById('w1').oninput=e=>document.getElementById('w1v').textContent=(+e.target.value).toFixed(1);
+document.getElementById('throw').onclick=()=>{ball={t:0,a0:rot,x:0,path:[[0,0]]};};
+document.getElementById('view').onclick=e=>{outside=!outside;e.target.textContent='👀 보는 곳: '+(outside?'밖에서':'회전목마 위에서');};
+function frame(now){
+ const dt=Math.min(.05,(now-last)/1000);last=now;
+ const w=+document.getElementById('w1').value;
+ rot+=w*dt;
+ if(ball){ball.t+=dt;ball.x=110*ball.t;
+  if(ball.x>=R)ball=null;else ball.path.push([ball.x,rot-ball.a0]);}
+ g1.clearRect(0,0,560,360);
+ g1.save();g1.translate(cx,cy);
+ const bo=outside?rot:0;
+ g1.save();g1.rotate(bo);
+ g1.fillStyle='#FFE2B8';g1.strokeStyle='#F28C28';g1.lineWidth=5;g1.beginPath();g1.arc(0,0,R,0,7);g1.fill();g1.stroke();
+ g1.fillStyle='#F28C28';for(let i=0;i<4;i++){g1.rotate(Math.PI/2);g1.fillRect(R*.4,-4,R*.5,8);}
+ g1.restore();
+ g1.fillStyle='#E0525A';g1.beginPath();g1.arc(R*.8*Math.cos(bo),R*.8*Math.sin(bo),12,0,7);g1.fill();
+ if(ball){
+  // 밖에서: 직선(x,0). 위에서: 회전판 기준 = (x,0)을 -(회전한 각도)만큼 돌린 위치
+  const pt=p=>outside?[p[0],0]:[p[0]*Math.cos(-p[1]),p[0]*Math.sin(-p[1])];
+  g1.strokeStyle='#3B82C4';g1.lineWidth=3;g1.beginPath();
+  ball.path.forEach((p,i)=>{const q=pt(p);i?g1.lineTo(q[0],q[1]):g1.moveTo(q[0],q[1]);});g1.stroke();
+  const q=pt(ball.path[ball.path.length-1]);
+  g1.fillStyle='#3B82C4';g1.beginPath();g1.arc(q[0],q[1],10,0,7);g1.fill();
+ }
+ g1.restore();
+ g1.fillStyle='#4A3B2A';g1.font='bold 15px sans-serif';g1.textAlign='center';
+ g1.fillText(outside?'밖에서 보면 공은 똑바로 가요':'타고 있는 사람에겐 공이 휘어 보여요',280,22);
+ requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+// 실험 2
+const c2=document.getElementById('c2'),g2=c2.getContext('2d');let T=0,l2=performance.now();
+function f2(now){
+ const dt=Math.min(.05,(now-l2)/1000);l2=now;T+=dt;
+ const W=+document.getElementById('w2').value;
+ document.getElementById('w2v').textContent=W.toFixed(1);
+ const x=Math.sin(T*6)*110, v=Math.cos(T*6); // 속도
+ const y=-W*v*40; // 코리올리: 속도에 비례, 회전 빠르기에 비례
+ g2.clearRect(0,0,560,300);
+ g2.fillStyle='#F5E3C8';g2.strokeStyle='#4A3B2A';g2.lineWidth=4;g2.fillRect(40,20,480,260);g2.strokeRect(40,20,480,260);
+ g2.setLineDash([4,6]);g2.beginPath();g2.moveTo(60,150);g2.lineTo(500,150);g2.stroke();g2.setLineDash([]);
+ g2.fillStyle='#F28C28';g2.fillRect(280+x-25,150+y-25,50,50);g2.strokeRect(280+x-25,150+y-25,50,50);
+ g2.save();g2.translate(480,50);g2.rotate(T*W*1.2);g2.strokeStyle='#3B82C4';g2.lineWidth=4;g2.beginPath();g2.arc(0,0,18,0.3,5.5);g2.stroke();g2.restore();
+ const m=document.getElementById('msg2');
+ m.textContent=Math.abs(W)<0.05?'센서가 가만히 있어요. 덩어리는 좌우로만 떨어요.':'돌리는 빠르기가 클수록 덩어리가 위아래로 더 크게 밀려요. 센서는 이 밀림의 크기로 회전 속도를 알아내요!';
+ requestAnimationFrame(f2);}
+requestAnimationFrame(f2);
+</script></body></html>
